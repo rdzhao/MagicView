@@ -1,13 +1,6 @@
-#include "MyWindow.h"
-#include <QDebug>
-#include <QString>
+#include "MyOpenGLWidget.h"
 
-MyWindow::~MyWindow()
-{
-	makeCurrent();
-}
-
-void MyWindow::initializeGL()
+void OGLWidget::initializeGL()
 {
 	// general initialize
 	leftPressed = false;
@@ -28,16 +21,9 @@ void MyWindow::initializeGL()
 
 	RenderModule* rm = new MeshModule();
 	rModules.push_back(rm);
-
 }
 
-void MyWindow::resizeGL(int width, int height)
-{
-	camera.setWinWidth(width);
-	camera.setWinHeight(height);
-}
-
-void MyWindow::paintGL()
+void OGLWidget::paintGL()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -55,7 +41,13 @@ void MyWindow::paintGL()
 	}
 }
 
-void MyWindow::mousePressEvent(QMouseEvent* event)
+void OGLWidget::resizeGL(int width, int height)
+{
+	camera.setWinWidth(width);
+	camera.setWinHeight(height);
+}
+
+void OGLWidget::mousePressEvent(QMouseEvent* event)
 {
 	if (event->button() == Qt::LeftButton)
 	{
@@ -68,16 +60,14 @@ void MyWindow::mousePressEvent(QMouseEvent* event)
 		camera.setPRotationIdentity();
 	}
 }
-
-void MyWindow::mouseReleaseEvent(QMouseEvent* event)
+void OGLWidget::mouseReleaseEvent(QMouseEvent* event)
 {
 	if (event->button() == Qt::LeftButton)
 	{
 		leftPressed = false;
 	}
 }
-
-void MyWindow::mouseMoveEvent(QMouseEvent* event)
+void OGLWidget::mouseMoveEvent(QMouseEvent* event)
 {
 	if (leftPressed)
 	{
@@ -91,8 +81,7 @@ void MyWindow::mouseMoveEvent(QMouseEvent* event)
 		update();
 	}
 }
-
-void MyWindow::wheelEvent(QWheelEvent* event)
+void OGLWidget::wheelEvent(QWheelEvent* event)
 {
 	if (event->delta() != 0)
 	{
@@ -102,12 +91,7 @@ void MyWindow::wheelEvent(QWheelEvent* event)
 	}
 }
 
-void MyWindow::update()
-{
-	QOpenGLWindow::update();
-}
-
-void MyWindow::printContextInformation()
+void OGLWidget::printContextInformation()
 {
 	QString glType;
 	QString glVersion;
