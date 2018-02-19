@@ -3,8 +3,13 @@
 #include <QWidget>
 #include <QMainWindow>
 #include <QOpenGLWidget>
+
 #include <QMenuBar>
 #include <QStatusBar>
+#include <QToolBar>
+
+#include <QIcon>
+
 #include <iostream>
 
 #include "MyOpenGLWidget.h"
@@ -26,11 +31,14 @@ public:
 private:
 	void createMenu();
 	void createCanvas();
+	void createStatus();
+	void createToolBar();
 
-	// menu action
+	// menu
 private:
 	QMenu* fileMenu;
-	QMenu* SelectMenu;
+	QMenu* selectMenu;
+	QMenu* opMenu;
 
 	QAction *newAct;
 	QAction *openAct;
@@ -40,5 +48,14 @@ private:
 	QAction *faceAct;
 	QAction *edgeAct;
 	QAction *vertAct;
-	
+
+	QAction *operationAct_1;
+
+private:
+	QToolBar * toolBar;
+
+	QAction *showFaceAct;
+	QAction *showEdgeAct;
+	QAction *showVertAct;
+
 };

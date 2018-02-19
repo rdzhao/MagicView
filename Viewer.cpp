@@ -4,6 +4,8 @@ Viewer::Viewer(QWidget *parent)
 	: QMainWindow(parent)
 {
 	createMenu();
+	createStatus();
+	createToolBar();
 	createCanvas();
 }
 
@@ -30,14 +32,14 @@ void Viewer::createMenu()
 		connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 	}
 
-	SelectMenu = menuBar()->addMenu("Selection");
-	SelectMenu->setFixedWidth(150);
+	selectMenu = menuBar()->addMenu("Selection");
+	selectMenu->setFixedWidth(150);
 	{
 		faceAct = new QAction("Select Face", this);
 		faceAct->setShortcut(Qt::Key::Key_0);
 		faceAct->setCheckable(true);
 		faceAct->setChecked(false);
-		SelectMenu->addAction(faceAct);
+		selectMenu->addAction(faceAct);
 		connect(faceAct, SIGNAL(triggered()), this, SLOT(uncheckEdge()));
 		connect(faceAct, SIGNAL(triggered()), this, SLOT(uncheckVert()));
 
@@ -45,7 +47,7 @@ void Viewer::createMenu()
 		edgeAct->setShortcut(Qt::Key::Key_1);
 		edgeAct->setCheckable(true);
 		edgeAct->setChecked(false);
-		SelectMenu->addAction(edgeAct);
+		selectMenu->addAction(edgeAct);
 		connect(edgeAct, SIGNAL(triggered()), this, SLOT(uncheckFace()));
 		connect(edgeAct, SIGNAL(triggered()), this, SLOT(uncheckVert()));
 
@@ -53,9 +55,17 @@ void Viewer::createMenu()
 		vertAct->setShortcut(Qt::Key::Key_2);
 		vertAct->setCheckable(true);
 		vertAct->setChecked(false);
-		SelectMenu->addAction(vertAct);
+		selectMenu->addAction(vertAct);
 		connect(vertAct, SIGNAL(triggered()), this, SLOT(uncheckFace()));
 		connect(vertAct, SIGNAL(triggered()), this, SLOT(uncheckEdge()));
+	}
+
+	opMenu = menuBar()->addMenu("Operation");
+	opMenu->setFixedWidth(150);
+	{
+		operationAct_1 = new QAction("Operation_1", this);
+		operationAct_1->setShortcut(tr("Crtl+O"));
+		opMenu->addAction(operationAct_1);
 	}
 }
 
@@ -72,6 +82,30 @@ void Viewer::createCanvas()
 
 	canvas->setFormat(format);
 	canvas->show();
+}
+
+void Viewer::createStatus()
+{
+	statusBar()->show();
+}
+
+void Viewer::createToolBar()
+{
+	toolBar = addToolBar("Tools");
+	toolBar->setMinimumHeight(30);
+	toolBar->setMinimumWidth(30);
+
+	showFaceAct = new QAction(this);
+	showFaceAct->setIcon(QIcon("Resources/1.png"));
+	toolBar->addAction(showFaceAct);
+
+	showEdgeAct = new QAction(this);
+	showEdgeAct->setIcon(QIcon("Resources/2.png"));
+	toolBar->addAction(showEdgeAct);
+
+	showVertAct = new QAction(this);
+	showVertAct->setIcon(QIcon("Resources/3.png"));
+	toolBar->addAction(showVertAct);
 }
 
 // Slots

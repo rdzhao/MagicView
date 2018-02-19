@@ -137,8 +137,8 @@ void MeshModule::setFragmentShaderSource()
 		"vec3 LightColor = vec3(1,1,1); \n"
 
 		"vec3 MaterialDiffuseColor = fragmentColor; \n"
-		"vec3 MaterialAmbientColor = vec3(0.1,0.1,0.1) * MaterialDiffuseColor; \n"
-		"vec3 MaterialSpecularColor = vec3(0.3,0.3,0.3); \n"
+		"vec3 MaterialAmbientColor = vec3(0.3,0.3,0.3) * MaterialDiffuseColor; \n"
+		"vec3 MaterialSpecularColor = vec3(0.1,0.1,0.1); \n"
 
 		"float distance = length( LightPosition_worldspace - Position_worldspace ); \n"
 
@@ -200,7 +200,7 @@ void MeshModule::render()
 	genNormalBuffer();
 	genVertexArray();
 
-	setLamp(10, 10, 10, 400);
+	setLamp(0, 0, 20, 400);
 	setMatrix();
 
 	mProgram->bind();

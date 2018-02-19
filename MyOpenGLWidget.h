@@ -8,8 +8,20 @@
 
 #include <QMouseEvent>
 
+#include <CGAL/Simple_cartesian.h>
+
 #include "RenderModule.h"
 #include "Camera.h"
+
+#include "Polyhedron.h"
+
+typedef double FT;
+typedef CGAL::Simple_cartesian<FT> Kernel;
+typedef Kernel::Point_3 Point_3;
+typedef Enriched_polyhedron<Kernel, Enriched_items> Mesh;
+typedef Enriched_polyhedron<Kernel, Enriched_items>::Vertex_iterator Vertex_iterator;
+typedef Enriched_polyhedron<Kernel, Enriched_items>::Facet_iterator Facet_iterator;
+typedef Enriched_polyhedron<Kernel, Enriched_items>::Halfedge_around_facet_circulator Halfedge_around_facet_circulator;
 
 class OGLWidget : 
 	public QOpenGLWidget,
