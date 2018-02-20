@@ -8,7 +8,7 @@
 #define	_POLYGON_MESH_
 
 // CGAL	
-#include <CGAL/Cartesian.h>
+//#include <CGAL/Cartesian.h>
 #include <CGAL/Polyhedron_3.h>
 
 
@@ -318,32 +318,17 @@ public:
 	{
 		int k;
 
-		//Vertex_iterator vi = vertices_begin();
-		//Vertex_iterator vi_end = vertices_end();
-		//k = 0;
-		//CGAL_For_all(vi, vi_end)
-		//{
-		//	vi->m_idx = k;
-		//	++k;
-		//}
+		k = 0;
+		for (Vertex_iterator vi = vertices_begin(); vi != vertices_end(); vi++, ++k)
+			vi->idx() = k;
 
-		//Halfedge_iterator hei = halfedges_begin();
-		//Halfedge_iterator hei_end = halfedges_end();
-		//k = 0;
-		//CGAL_For_all(hei, hei_end)
-		//{
-		//	hei->m_idx = k;
-		//	++k;
-		//}
+		k = 0;
+		for (Halfedge_iterator hei = halfedges_begin(); hei != halfedges_end(); hei++, ++k)
+			hei->idx() = k;
 
-		//Facet_iterator fi = vertices_begin();
-		//Facet_iterator fi_end = vertices_end();
-		//k = 0;
-		//CGAL_For_all(fi, fi_end)
-		//{
-		//	fi->m_idx = k;
-		//	++k;
-		//}
+		k = 0;
+		for (Facet_iterator fi = facets_begin(); fi != facets_end(); fi++, ++k)
+			fi->idx() = k;
 	}
 
 	// normals (per	facet, then	per	vertex)

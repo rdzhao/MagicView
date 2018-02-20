@@ -81,7 +81,23 @@ public:
 
 	void init();
 	void render();
+};
 
-private:
-	int indexSize;
+class WireFrameModule : public RenderModule
+{
+public:
+	WireFrameModule() {};
+	~WireFrameModule() {};
+
+	void setVertexShaderSource();
+	void setFragmentShaderSource();
+
+	void setData(std::vector<float> vd, std::vector<int> id, std::vector<float> nd, std::vector<float> cd);
+	void setCamera(Camera c);
+
+	void genVertexArray();
+
+	void init();
+	void render();
+
 };

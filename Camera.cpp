@@ -121,7 +121,7 @@ void Camera::toScreenCoord(int wx, int wy, double& sx, double& sy)
 	sx = 1.0*(2 * wx - winWidth) / winWidth;
 	sy = 1.0*(2 * (winHeight - wy) - winHeight) / winHeight;
 
-	cout << sx << " " << sy << endl;
+	//cout << sx << " " << sy << endl;
 
 	clamp(sx, -1, 1);
 	clamp(sy, -1, 1);
