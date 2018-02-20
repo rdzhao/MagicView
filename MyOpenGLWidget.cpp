@@ -31,44 +31,45 @@ void OGLWidget::paintGL()
 	for (int i = 0; i < rModules.size(); ++i)
 	{
 		std::vector<float> v;
-		std::vector<int> idx = { 0,2,1,0,3,2,0,1,3,1,2,3 };
-		std::vector<float> n = { -1,-1,-1,0,0,1,0,1,0,1,0,0 };
-		std::vector<float> c = { 1,0,0,0,1,0,0,0,1,1,1,0 };
+		std::vector<int> idx;
+		std::vector<float> n;
+		std::vector<float> c;
 
-		Point_3 p(1.0, 0.0, 0.0);
-		Point_3 q(0.0, 1.0, 0.0);
-		Point_3 r(0.0, 0.0, 1.0);
-		Point_3 s(0.0, 0.0, 0.0);
-		Mesh P;
-		P.make_tetrahedron(p, q, r, s);
-		//P.compute_normals();
-		CGAL::set_ascii_mode(std::cout);
-		int k = 0;
-		for (Vertex_iterator vi = P.vertices_begin(); vi != P.vertices_end(); ++vi, ++k)
+		cout << "-----------------"<< endl;
+		Mesh* mesh;
+		Parser_obj<Kernel, Enriched_items> parser;
+		parser.read("C:\\Users\\rdzhao\\Desktop\\Project\\QtViewer\\QtViewer\\x64\\Release\\ball_3.obj", mesh);
+		cout << "-----------------" << endl;
+
+		mesh->index_elements();
+		mesh->compute_normals();
+		
+		for (Vertex_iterator vi = mesh->vertices_begin(); vi != mesh->vertices_end(); ++vi)
 		{
+			cout << vi->point() << endl;
 			v.push_back(vi->point().x());
 			v.push_back(vi->point().y());
 			v.push_back(vi->point().z());
-			//cout << vi->point() << endl;
 
-			/*n.push_back(vi->normal().x());
+			n.push_back(vi->normal().x());
 			n.push_back(vi->normal().y());
-			n.push_back(vi->normal().z());*/
-			//cout << vi->normal() << endl;
+			n.push_back(vi->normal().z());
+
+			c.push_back(0.3);
+			c.push_back(0.5);
+			c.push_back(0.7);
 		}
 
-		//for (Facet_iterator fi = P.facets_begin(); fi != P.facets_end(); ++fi)
-		//{
-		//	cout << "-------------------"<< endl;
-		//	Halfedge_around_facet_circulator he = fi->facet_begin();
-		//	Halfedge_around_facet_circulator end = he;
+		for (Facet_iterator fi = mesh->facets_begin(); fi != mesh->facets_end(); ++fi)
+		{
+			Halfedge_around_facet_circulator he = fi->facet_begin();
+			Halfedge_around_facet_circulator end = he;
 
-		//	CGAL_For_all(he, end)
-		//		cout << he->vertex()->tag() << endl;
+			CGAL_For_all(he, end)
+				idx.push_back(he->vertex()->idx());
+		}
 
-		//}
-
-		////set some tentative data
+		//set some tentative data
 		//std::vector<float> v = { 0,0,0,2,0,0,0,2,0,-2,0,0,0,-2,0,1,1,0,-1,1,0,-1,-1,0,1,-1,0 };
 		//std::vector<int> idx = { 0,1,5,0,2,6,0,3,7,0,4,8 };
 		//std::vector<float> n = { 0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1 };

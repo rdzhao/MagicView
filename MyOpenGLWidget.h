@@ -14,14 +14,15 @@
 #include "Camera.h"
 
 #include "Polyhedron.h"
+#include "WavefrontObjParser.h"
 
 typedef double FT;
 typedef CGAL::Simple_cartesian<FT> Kernel;
 typedef Kernel::Point_3 Point_3;
 typedef Enriched_polyhedron<Kernel, Enriched_items> Mesh;
-typedef Enriched_polyhedron<Kernel, Enriched_items>::Vertex_iterator Vertex_iterator;
-typedef Enriched_polyhedron<Kernel, Enriched_items>::Facet_iterator Facet_iterator;
-typedef Enriched_polyhedron<Kernel, Enriched_items>::Halfedge_around_facet_circulator Halfedge_around_facet_circulator;
+typedef Mesh::Vertex_iterator Vertex_iterator;
+typedef Mesh::Facet_iterator Facet_iterator;
+typedef Mesh::Halfedge_around_facet_circulator Halfedge_around_facet_circulator;
 
 class OGLWidget : 
 	public QOpenGLWidget,

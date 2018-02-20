@@ -13,14 +13,20 @@
 
 
 // a refined facet with a normal and a tag
-template <class	Refs, class	T, class P, class	Norm>
+template <class	Refs, class	T, class P, class Norm>
 class	Enriched_facet : public	CGAL::HalfedgeDS_face_base<Refs, T>
 {
+private:
+	// idx
+	int m_idx;
+
 	// tag
 	int	m_tag;
 
 	// normal
 	Norm m_normal;
+
+
 
 
 public:
@@ -33,15 +39,19 @@ public:
 	{
 	}
 
+	// idx
+	const int& idx() const { return m_idx; }
+	int& idx() { return m_idx; }
+
 	// tag
 	const int& tag() const { return m_tag; }
 	int& tag() { return m_tag; }
-
 
 	// normal
 	typedef	Norm Normal_3;
 	Normal_3&	normal() { return	m_normal; }
 	const	Normal_3&	normal() const { return	m_normal; }
+
 };
 
 
@@ -53,6 +63,8 @@ template <class	Refs, class	Tprev, class Tvertex, class	Tface, class Norm>
 class	Enriched_halfedge : public CGAL::HalfedgeDS_halfedge_base<Refs, Tprev, Tvertex, Tface>
 {
 private:
+	// idx
+	int m_idx;
 
 	// general-purpose tag
 	int	m_tag;
@@ -72,6 +84,10 @@ public:
 		m_cotan = 0;
 	}
 
+	// idx
+	const int& idx() const { return m_idx; }
+	int& idx() { return m_idx; }
+	
 	// tag
 	const int& tag() const { return m_tag; }
 	int& tag() { return m_tag; }
@@ -99,6 +115,9 @@ public:
 
 
 private:
+	// idx
+	int m_idx;
+
 	int	m_tag;
 	Normal m_normal;
 
@@ -112,6 +131,10 @@ public:
 		: CGAL::HalfedgeDS_vertex_base<Refs, T, P>(pt)
 	{
 	}
+
+	// idx
+	const int& idx() const { return m_idx; }
+	int& idx() { return m_idx; }
 
 	// normal
 	Normal&	normal() { return	m_normal; }
@@ -290,7 +313,38 @@ public:
 	}
 
 
+	// index all elements
+	void index_elements()
+	{
+		int k;
 
+		//Vertex_iterator vi = vertices_begin();
+		//Vertex_iterator vi_end = vertices_end();
+		//k = 0;
+		//CGAL_For_all(vi, vi_end)
+		//{
+		//	vi->m_idx = k;
+		//	++k;
+		//}
+
+		//Halfedge_iterator hei = halfedges_begin();
+		//Halfedge_iterator hei_end = halfedges_end();
+		//k = 0;
+		//CGAL_For_all(hei, hei_end)
+		//{
+		//	hei->m_idx = k;
+		//	++k;
+		//}
+
+		//Facet_iterator fi = vertices_begin();
+		//Facet_iterator fi_end = vertices_end();
+		//k = 0;
+		//CGAL_For_all(fi, fi_end)
+		//{
+		//	fi->m_idx = k;
+		//	++k;
+		//}
+	}
 
 	// normals (per	facet, then	per	vertex)
 	void compute_normals_per_facet()
