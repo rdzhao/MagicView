@@ -59,6 +59,9 @@ void Camera::init()
 {
 	rotationMatrix.setToIdentity();
 	translationMatrix.setToIdentity();
+	viewMatrix.setToIdentity();
+	projectionMatrix.setToIdentity();
+
 	viewMatrix.lookAt(pos, center, up);
 	projectionMatrix.perspective(fieldOfView, aspectRatio, nearPlane, farPlane);
 }
@@ -95,9 +98,15 @@ void Camera::arcballRotate()
 
 void Camera::zoom()
 {
-	QMatrix4x4 translation;
-	translation.translate(QVector3D(0, 0, scroll*0.001));
+	//get camera position;
+	QMatrix4x4 vm_inv = (viewMatrix*translationMatrix*rotationMatrix).inverted();
+	QVector3D eye_unit = (vm_inv.column(3)).toVector3DAffine().normalized();
+	// ????????
+	// to be fixed
 
+	QMatrix4x4 translation;
+	translation.translate(scroll*0.001*eye_unit);
+	
 	translationMatrix *= translation;
 }
 

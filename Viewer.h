@@ -3,12 +3,15 @@
 #include <QWidget>
 #include <QMainWindow>
 #include <QOpenGLWidget>
+#include <QFileDialog>
+#include <QMessageBox>
 
 #include <QMenuBar>
 #include <QStatusBar>
 #include <QToolBar>
-
 #include <QIcon>
+
+#include <QTextStream>
 
 #include <iostream>
 
@@ -24,6 +27,8 @@ public:
 	Viewer(QWidget* parent = Q_NULLPTR);
 
 	private slots:
+	void load();
+
 	void uncheckFace();
 	void uncheckEdge();
 	void uncheckVert();
@@ -33,6 +38,10 @@ private:
 	void createCanvas();
 	void createStatus();
 	void createToolBar();
+
+	//widget
+private:
+	OGLWidget* canvas;
 
 	// menu
 private:
@@ -57,5 +66,8 @@ private:
 	QAction *showFaceAct;
 	QAction *showEdgeAct;
 	QAction *showVertAct;
-
+	
+	//data
+private:
+	Mesh* mesh;
 };

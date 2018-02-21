@@ -55,8 +55,8 @@ void RenderModule::setMatrix()
 
 	QMatrix4x4 modelMatrix, viewMatrix, projection, mvp;
 	modelMatrix.setToIdentity();
-	modelMatrix = camera.translationMatrix*camera.rotationMatrix*modelMatrix;
-	viewMatrix = camera.viewMatrix;
+	modelMatrix = modelMatrix;
+	viewMatrix = camera.viewMatrix*camera.translationMatrix*camera.rotationMatrix;
 	projection = camera.projectionMatrix;
 	mvp = projection*viewMatrix*modelMatrix;
 

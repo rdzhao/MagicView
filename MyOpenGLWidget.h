@@ -44,6 +44,12 @@ public:
 	void mouseMoveEvent(QMouseEvent* event);
 	void wheelEvent(QWheelEvent* event);
 
+	void setMesh(Mesh* m);
+	void setRenderContexts();
+	void setMeshModule(RenderModule* rm);
+	void setWireFrameModule(RenderModule* rm);
+	void setCamera();
+
 private:
 	void printContextInformation();
 
@@ -53,5 +59,5 @@ private:
 
 	bool leftPressed; // left button pressed or not
 
-	Mesh P;
+	Mesh* mesh;
 };

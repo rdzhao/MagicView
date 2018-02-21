@@ -21,31 +21,11 @@ void OGLWidget::initializeGL()
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 	//init camera
-	camera.setView(QVector3D(0, 0, 4), QVector3D(0, 0, 0), QVector3D(0, 1, 0));
-	camera.setProject(45.0, 4.0 / 3.0, 0.01, 100);
-	camera.init();
+	//camera.setView(QVector3D(0, 0, 4), QVector3D(0, 0, 0), QVector3D(0, 1, 0));
+	//camera.setProject(45.0, 4.0 / 3.0, 0.01, 100);
+	//camera.init();
 
-	RenderModule* rm1 = new MeshModule();
-	rModules.push_back(rm1);
-	RenderModule* rm2 = new WireFrameModule();
-	rModules.push_back(rm2);
-
-	
-	
-	//string filename = "C:\\Users\\zhaor\\Desktop\\TestProject\\QtApp\\x64\\Release\\sphere.obj";
-	string filename = "sphere.obj";
-
-	ObjReader<Kernel, Enriched_items> reader(filename);
-	reader.read();
-
-	ObjBuilder<HalfedgeDS> builder(reader.vertices(), reader.facets());
-	P.delegate(builder);
-
-	std::ofstream SaveFile("output.off");
-	SaveFile << P;
-
-	P.index_elements();
-	P.compute_normals();
+	//setRenderContexts();
 }
 
 void OGLWidget::paintGL()
@@ -54,112 +34,8 @@ void OGLWidget::paintGL()
 
 	for (int i = 0; i < rModules.size(); ++i)
 	{
-		if (i == 0)
-		{
-			std::vector<float> v;
-			std::vector<int> idx;
-			std::vector<float> n;
-			std::vector<float> c;
-
-			//cout << P.size_of_vertices() << endl;
-
-			Point_3 cc(0, 0, 0);
-			for (Vertex_iterator vi = P.vertices_begin(); vi != P.vertices_end(); ++vi)
-				cc += Vector_3(vi->point().x(), vi->point().y(), vi->point().z());
-			Point_3 ccc(cc.x() / P.size_of_vertices(), cc.y() / P.size_of_vertices(), cc.z() / P.size_of_vertices());
-			//cout << ccc.x() << " " << ccc.y() << " " << ccc.z() << endl;
-
-			for (Vertex_iterator vi = P.vertices_begin(); vi != P.vertices_end(); ++vi)
-			{
-				//cout << vi->point() << endl;
-				v.push_back(vi->point().x() - ccc.x());
-				v.push_back(vi->point().y() - ccc.y());
-				v.push_back(vi->point().z() - ccc.z());
-
-				n.push_back(vi->normal().x());
-				n.push_back(vi->normal().y());
-				n.push_back(vi->normal().z());
-
-				c.push_back(0.3);
-				c.push_back(0.5);
-				c.push_back(0.7);
-			}
-
-			for (Facet_iterator fi = P.facets_begin(); fi != P.facets_end(); ++fi)
-			{
-				Halfedge_around_facet_circulator he = fi->facet_begin();
-				Halfedge_around_facet_circulator end = he;
-
-				//cout << "^^^^^^^^^^^^^^^^^^^^"<< endl;
-				CGAL_For_all(he, end)
-				{
-					//cout << he->vertex()->idx() << endl;
-					idx.push_back(he->vertex()->idx());
-				}
-			}
-
-			//cout << v.size() << " " << c.size() << " " << idx.size() << endl;
-
-			////set some tentative data
-			//std::vector<float> v = { 0,0,0,2,0,0,0,2,0,-2,0,0,0,-2,0,1,1,0,-1,1,0,-1,-1,0,1,-1,0 };
-			//std::vector<int> idx = { 0,1,5,0,2,6,0,3,7,0,4,8 };
-			//std::vector<float> n = { 0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1 };
-			//std::vector<float> c = { 1,0,0,0,1,0,0,0,1,1,0,0,0,1,0,0,0,1,1,0,0,0,1,0,0,0,1 };
-
-			rModules[i]->setData(v, idx, n, c);
-			rModules[i]->setCamera(camera);
-			rModules[i]->render();
-		}
-
-		if (i == 1)
-		{
-			std::vector<float> v;
-			std::vector<int> idx;
-			std::vector<float> n;
-			std::vector<float> c;
-
-			//cout << P.size_of_vertices() << endl;
-
-			Point_3 cc(0, 0, 0);
-			for (Vertex_iterator vi = P.vertices_begin(); vi != P.vertices_end(); ++vi)
-				cc += Vector_3(vi->point().x(), vi->point().y(), vi->point().z());
-			Point_3 ccc(cc.x() / P.size_of_vertices(), cc.y() / P.size_of_vertices(), cc.z() / P.size_of_vertices());
-
-
-			for (Vertex_iterator vi = P.vertices_begin(); vi != P.vertices_end(); ++vi)
-			{
-				//cout << vi->point() << endl;
-				v.push_back(vi->point().x() - ccc.x());
-				v.push_back(vi->point().y() - ccc.y());
-				v.push_back(vi->point().z() - ccc.z());
-
-				n.push_back(vi->normal().x());
-				n.push_back(vi->normal().y());
-				n.push_back(vi->normal().z());
-
-				c.push_back(1);
-				c.push_back(0);
-				c.push_back(0);
-			}
-
-			for (Edge_iterator ei = P.edges_begin(); ei != P.edges_end(); ++ei)
-			{
-				idx.push_back(ei->vertex()->idx());
-				idx.push_back(ei->opposite()->vertex()->idx());
-			}
-
-			//cout << v.size() << " " << c.size() << " " << idx.size() << endl;
-
-			////set some tentative data
-			//std::vector<float> v = { 0,0,0,2,0,0,0,2,0,-2,0,0,0,-2,0,1,1,0,-1,1,0,-1,-1,0,1,-1,0 };
-			//std::vector<int> idx = { 0,1,5,0,2,6,0,3,7,0,4,8 };
-			//std::vector<float> n = { 0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1 };
-			//std::vector<float> c = { 1,0,0,0,1,0,0,0,1,1,0,0,0,1,0,0,0,1,1,0,0,0,1,0,0,0,1 };
-
-			rModules[i]->setData(v, idx, n, c);
-			rModules[i]->setCamera(camera);
-			rModules[i]->render();
-		}
+		rModules[i]->setCamera(camera);
+		rModules[i]->render();
 	}
 }
 
@@ -212,6 +88,112 @@ void OGLWidget::wheelEvent(QWheelEvent* event)
 		camera.zoom();
 		update();
 	}
+}
+
+void OGLWidget::setMesh(Mesh* m)
+{
+	mesh = m;
+}
+
+void OGLWidget::setRenderContexts()
+{
+	RenderModule* rm1 = new MeshModule();
+	rModules.push_back(rm1);
+	RenderModule* rm2 = new WireFrameModule();
+	rModules.push_back(rm2);
+
+	setMeshModule(rm1);
+	setWireFrameModule(rm2);
+}
+
+void OGLWidget::setMeshModule(RenderModule* rm)
+{
+	std::vector<float> v;
+	std::vector<int> idx;
+	std::vector<float> n;
+	std::vector<float> c;
+
+	Point_3 cc(0, 0, 0);
+	for (Vertex_iterator vi = mesh->vertices_begin(); vi != mesh->vertices_end(); ++vi)
+		cc += Vector_3(vi->point().x(), vi->point().y(), vi->point().z());
+	Point_3 ccc(cc.x() / mesh->size_of_vertices(), cc.y() / mesh->size_of_vertices(), cc.z() / mesh->size_of_vertices());
+
+	for (Vertex_iterator vi = mesh->vertices_begin(); vi != mesh->vertices_end(); ++vi)
+	{
+		//cout << vi->point() << endl;
+		v.push_back(vi->point().x() - ccc.x());
+		v.push_back(vi->point().y() - ccc.y());
+		v.push_back(vi->point().z() - ccc.z());
+
+		n.push_back(vi->normal().x());
+		n.push_back(vi->normal().y());
+		n.push_back(vi->normal().z());
+
+		c.push_back(0.3);
+		c.push_back(0.5);
+		c.push_back(0.7);
+	}
+
+	for (Facet_iterator fi = mesh->facets_begin(); fi != mesh->facets_end(); ++fi)
+	{
+		Halfedge_around_facet_circulator he = fi->facet_begin();
+		Halfedge_around_facet_circulator end = he;
+
+		//cout << "^^^^^^^^^^^^^^^^^^^^"<< endl;
+		CGAL_For_all(he, end)
+		{
+			//cout << he->vertex()->idx() << endl;
+			idx.push_back(he->vertex()->idx());
+		}
+	}
+
+	rm->setData(v, idx, n, c);
+}
+void OGLWidget::setWireFrameModule(RenderModule* rm)
+{
+	std::vector<float> v;
+	std::vector<int> idx;
+	std::vector<float> n;
+	std::vector<float> c;
+
+	Point_3 cc(0, 0, 0);
+	for (Vertex_iterator vi = mesh->vertices_begin(); vi != mesh->vertices_end(); ++vi)
+		cc += Vector_3(vi->point().x(), vi->point().y(), vi->point().z());
+	Point_3 ccc(cc.x() / mesh->size_of_vertices(), cc.y() / mesh->size_of_vertices(), cc.z() / mesh->size_of_vertices());
+
+	for (Vertex_iterator vi = mesh->vertices_begin(); vi != mesh->vertices_end(); ++vi)
+	{
+		//cout << vi->point() << endl;
+		v.push_back(vi->point().x() - ccc.x());
+		v.push_back(vi->point().y() - ccc.y());
+		v.push_back(vi->point().z() - ccc.z());
+
+		n.push_back(vi->normal().x());
+		n.push_back(vi->normal().y());
+		n.push_back(vi->normal().z());
+
+		c.push_back(1);
+		c.push_back(0);
+		c.push_back(0);
+	}
+
+	for (Edge_iterator ei = mesh->edges_begin(); ei != mesh->edges_end(); ++ei)
+	{
+		idx.push_back(ei->vertex()->idx());
+		idx.push_back(ei->opposite()->vertex()->idx());
+	}
+
+	rm->setData(v, idx, n, c);
+}
+
+void OGLWidget::setCamera()
+{
+
+	camera.setView(QVector3D(0, 0, 4 * (mesh->zmax() - mesh->zmin())), QVector3D(0, 0, 0), QVector3D(0, 1, 0));
+
+	camera.setProject(45.0, 4.0 / 3.0, 0.01, 100);
+	
+	camera.init();
 }
 
 void OGLWidget::printContextInformation()

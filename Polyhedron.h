@@ -347,13 +347,15 @@ public:
 	}
 
 	// compute bounding	box
-	void compute_bounding_box(FT &xmin,
-		FT &xmax,
-		FT &ymin,
-		FT &ymax,
-		FT &zmin,
-		FT &zmax)
+	void compute_bounding_box()
 	{
+		FT xmin;
+		FT xmax;
+		FT ymin;
+		FT ymax;
+		FT zmin;
+		FT zmax;
+
 		if (size_of_vertices() == 0)
 			return;
 

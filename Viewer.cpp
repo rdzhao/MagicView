@@ -21,6 +21,7 @@ void Viewer::createMenu()
 		openAct = new QAction("Open", this);
 		openAct->setShortcuts(QKeySequence::Open);
 		fileMenu->addAction(openAct);
+		connect(openAct, SIGNAL(triggered()), this, SLOT(load()));
 
 		saveAct = new QAction("Save", this);
 		saveAct->setShortcuts(QKeySequence::Save);
@@ -71,7 +72,7 @@ void Viewer::createMenu()
 
 void Viewer::createCanvas()
 {
-	OGLWidget* canvas = new OGLWidget();
+	canvas = new OGLWidget();
 	setCentralWidget(canvas);
 
 	QSurfaceFormat format;
@@ -109,6 +110,38 @@ void Viewer::createToolBar()
 }
 
 // Slots
+void Viewer::load()
+{
+	QString fileName = QFileDialog::getOpenFileName(this,
+		tr("Open"), "",
+		tr("WaveFront Obj (*.obj);;All Files (*)"));
+
+	if (fileName.isEmpty())
+		return;
+	else 
+	{
+		string fn = fileName.toLocal8Bit().constData();
+
+		ObjReader<Kernel, Enriched_items> reader(fn);
+		reader.read();
+
+		mesh = new Enriched_polyhedron<Kernel, Enriched_items>;
+
+		ObjBuilder<HalfedgeDS> builder(reader.vertices(), reader.facets());
+		mesh->delegate(builder);
+
+		mesh->index_elements();
+		mesh->compute_normals();
+		mesh->compute_bounding_box();
+
+		canvas->setMesh(mesh);
+		canvas->setRenderContexts();
+		canvas->setCamera();
+		canvas->update();
+	}
+
+}
+
 void Viewer::uncheckFace()
 {
 	faceAct->setChecked(false);
