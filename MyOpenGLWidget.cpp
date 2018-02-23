@@ -19,13 +19,6 @@ void OGLWidget::initializeGL()
 	glPolygonOffset(1.0f, 1.0f);
 	
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-
-	//init camera
-	//camera.setView(QVector3D(0, 0, 4), QVector3D(0, 0, 0), QVector3D(0, 1, 0));
-	//camera.setProject(45.0, 4.0 / 3.0, 0.01, 100);
-	//camera.init();
-
-	//setRenderContexts();
 }
 
 void OGLWidget::paintGL()

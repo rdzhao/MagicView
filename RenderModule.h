@@ -49,7 +49,7 @@ protected:
 
 	QOpenGLBuffer::UsagePattern mPrimType;
 
-	GLuint lightPosID;
+	GLuint lightDisID;
 	GLuint lightPowerID;
 
 	GLuint mvpID;

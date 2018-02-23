@@ -98,11 +98,20 @@ void Camera::arcballRotate()
 
 void Camera::zoom()
 {
+	//QMatrix4x4 vm = (viewMatrix*translationMatrix*rotationMatrix);
+
+	//cout << "matrix:"<< endl;
+	//cout << vm.row(0)[0] << " " << vm.row(0)[1] << " " << vm.row(0)[2] << " " << vm.row(0)[3] << endl;
+	//cout << vm.row(1)[0] << " " << vm.row(1)[1] << " " << vm.row(1)[2] << " " << vm.row(1)[3] << endl;
+	//cout << vm.row(2)[0] << " " << vm.row(2)[1] << " " << vm.row(2)[2] << " " << vm.row(2)[3] << endl;
+	//cout << vm.row(3)[0] << " " << vm.row(3)[1] << " " << vm.row(3)[2] << " " << vm.row(3)[3] << endl;
+	//cout << endl;
+
 	//get camera position;
-	QMatrix4x4 vm_inv = (viewMatrix*translationMatrix*rotationMatrix).inverted();
-	QVector3D eye_unit = (vm_inv.column(3)).toVector3DAffine().normalized();
-	// ????????
-	// to be fixed
+	QMatrix4x4 vm_inv = (viewMatrix*translationMatrix*rotationMatrix)/*.inverted()*/;
+	QVector3D eye_unit = (vm_inv.column(3)).toVector3DAffine();
+
+	//cout << eye_unit[0]<<" " << eye_unit[1] << " " << eye_unit[2]  << endl;
 
 	QMatrix4x4 translation;
 	translation.translate(scroll*0.001*eye_unit);

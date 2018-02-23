@@ -40,10 +40,10 @@ void RenderModule::genColorBuffer()
 
 void RenderModule::setLamp(float x, float y, float z, float power)
 {
-	lightPosID = mProgram->uniformLocation("LightPosition_worldspace");
+	lightDisID = mProgram->uniformLocation("LightDistance");
 	lightPowerID = mProgram->uniformLocation("LightPower");
 
-	mProgram->setUniformValue(lightPosID, x, y, z);
+	mProgram->setUniformValue(lightDisID, z);
 	mProgram->setUniformValue(lightPowerID, GLfloat(power));
 }
 
@@ -94,13 +94,15 @@ void MeshModule::setVertexShaderSource()
 		"out vec3 Position_worldspace; \n"
 		"out vec3 Normal_cameraspace; \n"
 		"out vec3 EyeDirection_cameraspace; \n"
+		"out vec3 LightPosition_worldspace; \n"
 		"out vec3 LightDirection_cameraspace; \n"
 		"out vec3 fragmentColor; \n"
 
 		"uniform mat4 MVP; \n"
 		"uniform mat4 V; \n"
 		"uniform mat4 M; \n"
-		"uniform vec3 LightPosition_worldspace; \n"
+		//"uniform vec3 LightPosition_worldspace; \n"
+		"uniform float LightDistance; \n"
 
 		"void main(){ \n"
 		"gl_Position =  MVP * vec4(vertexPosition_modelspace,1); \n"
@@ -108,6 +110,10 @@ void MeshModule::setVertexShaderSource()
 
 		"vec3 vertexPosition_cameraspace = ( V * M * vec4(vertexPosition_modelspace,1)).xyz; \n"
 		"EyeDirection_cameraspace = vec3(0,0,0) - vertexPosition_cameraspace; \n"
+
+		"vec4 origin=vec4(0,0,0,1); \n"
+		"vec4 CameraPosition_worldspace=inverse(M)*inverse(V)*origin; \n"
+		"LightPosition_worldspace=normalize(CameraPosition_worldspace.xyz)*LightDistance; \n"
 
 		"vec3 LightPosition_cameraspace = ( V * vec4(LightPosition_worldspace,1)).xyz; \n"
 		"LightDirection_cameraspace = LightPosition_cameraspace + EyeDirection_cameraspace; \n"
@@ -127,6 +133,7 @@ void MeshModule::setFragmentShaderSource()
 		"#version 330 core \n"
 
 		"in vec3 Position_worldspace; \n"
+		"in vec3 LightPosition_worldspace; \n"
 		"in vec3 Normal_cameraspace; \n"
 		"in vec3 EyeDirection_cameraspace; \n"
 		"in vec3 LightDirection_cameraspace; \n"
@@ -134,7 +141,8 @@ void MeshModule::setFragmentShaderSource()
 
 		"out vec3 color; \n"
 
-		"uniform vec3 LightPosition_worldspace; \n"
+		//"uniform vec3 LightPosition_worldspace; \n"
+		"uniform float LightDistance; \n"
 		"uniform float LightPower; \n"
 		"uniform sampler2D textureSampler; \n"
 
@@ -142,7 +150,7 @@ void MeshModule::setFragmentShaderSource()
 		"vec3 LightColor = vec3(1,1,1); \n"
 
 		"vec3 MaterialDiffuseColor = fragmentColor; \n"
-		"vec3 MaterialAmbientColor = vec3(0.3,0.3,0.3) * MaterialDiffuseColor; \n"
+		"vec3 MaterialAmbientColor = vec3(0.4,0.4,0.4) * MaterialDiffuseColor; \n"
 		"vec3 MaterialSpecularColor = vec3(0.1,0.1,0.1); \n"
 
 		"float distance = length( LightPosition_worldspace - Position_worldspace ); \n"
@@ -245,13 +253,15 @@ void WireFrameModule::setVertexShaderSource()
 		"out vec3 Position_worldspace; \n"
 		"out vec3 Normal_cameraspace; \n"
 		"out vec3 EyeDirection_cameraspace; \n"
+		"out vec3 LightPosition_worldspace; \n"
 		"out vec3 LightDirection_cameraspace; \n"
 		"out vec3 fragmentColor; \n"
 
 		"uniform mat4 MVP; \n"
 		"uniform mat4 V; \n"
 		"uniform mat4 M; \n"
-		"uniform vec3 LightPosition_worldspace; \n"
+		//"uniform vec3 LightPosition_worldspace; \n"
+		"uniform float LightDistance; \n"
 
 		"void main(){ \n"
 		"gl_Position =  MVP * vec4(vertexPosition_modelspace,1); \n"
@@ -259,6 +269,10 @@ void WireFrameModule::setVertexShaderSource()
 
 		"vec3 vertexPosition_cameraspace = ( V * M * vec4(vertexPosition_modelspace,1)).xyz; \n"
 		"EyeDirection_cameraspace = vec3(0,0,0) - vertexPosition_cameraspace; \n"
+
+		"vec4 origin=vec4(0,0,0,1); \n"
+		"vec4 CameraPosition_worldspace=inverse(M)*inverse(V)*origin; \n"
+		"LightPosition_worldspace=normalize(CameraPosition_worldspace.xyz)*LightDistance; \n"
 
 		"vec3 LightPosition_cameraspace = ( V * vec4(LightPosition_worldspace,1)).xyz; \n"
 		"LightDirection_cameraspace = LightPosition_cameraspace + EyeDirection_cameraspace; \n"
@@ -278,6 +292,7 @@ void WireFrameModule::setFragmentShaderSource()
 		"#version 330 core \n"
 
 		"in vec3 Position_worldspace; \n"
+		"in vec3 LightPosition_worldspace; \n"
 		"in vec3 Normal_cameraspace; \n"
 		"in vec3 EyeDirection_cameraspace; \n"
 		"in vec3 LightDirection_cameraspace; \n"
@@ -285,7 +300,8 @@ void WireFrameModule::setFragmentShaderSource()
 
 		"out vec3 color; \n"
 
-		"uniform vec3 LightPosition_worldspace; \n"
+		//"uniform vec3 LightPosition_worldspace; \n"
+		"uniform float LightDistance; \n"
 		"uniform float LightPower; \n"
 		"uniform sampler2D textureSampler; \n"
 
@@ -293,7 +309,7 @@ void WireFrameModule::setFragmentShaderSource()
 		"vec3 LightColor = vec3(1,1,1); \n"
 
 		"vec3 MaterialDiffuseColor = fragmentColor; \n"
-		"vec3 MaterialAmbientColor = vec3(0.3,0.3,0.3) * MaterialDiffuseColor; \n"
+		"vec3 MaterialAmbientColor = vec3(0.4,0.4,0.4) * MaterialDiffuseColor; \n"
 		"vec3 MaterialSpecularColor = vec3(0.1,0.1,0.1); \n"
 
 		"float distance = length( LightPosition_worldspace - Position_worldspace ); \n"
