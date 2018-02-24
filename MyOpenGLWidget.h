@@ -16,6 +16,7 @@
 
 #include "Polyhedron.h"
 #include "WavefrontObjParser.h"
+#include "KDTreeCPU.h"
 
 typedef double FT;
 typedef CGAL::Simple_cartesian<FT> Kernel;
@@ -45,10 +46,17 @@ public:
 	void wheelEvent(QWheelEvent* event);
 
 	void setMesh(Mesh* m);
+	void setKDTree();
 	void setRenderContexts();
 	void setMeshModule(RenderModule* rm);
 	void setWireFrameModule(RenderModule* rm);
 	void setCamera();
+
+	void setFaceSelection(bool b);
+	void setEdgeSelection(bool b);
+	void setVertSelection(bool b);
+
+	void selectFace(int wx, int wy);
 
 private:
 	void printContextInformation();
@@ -60,4 +68,11 @@ private:
 	bool leftPressed; // left button pressed or not
 
 	Mesh* mesh;
+	KDTreeCPU* kdTree;
+
+	//status
+private:
+	bool faceSelection;
+	bool edgeSelection;
+	bool vertSelection;
 };

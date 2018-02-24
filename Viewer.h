@@ -29,13 +29,16 @@ public:
 	private slots:
 	void load();
 
+	void checkFace();
+	void checkEdge();
+	void checkVert();
 	void uncheckFace();
 	void uncheckEdge();
 	void uncheckVert();
 
 private:
-	void createMenu();
 	void createCanvas();
+	void createMenu();
 	void createStatus();
 	void createToolBar();
 

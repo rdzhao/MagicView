@@ -119,6 +119,21 @@ void Camera::zoom()
 	translationMatrix *= translation;
 }
 
+void Camera::getFarNearPointWorld(int wx, int wy, QVector3D& nearP, QVector3D& farP)
+{
+	double sx, sy;
+	toScreenCoord(wx, wy, sx, sy);
+	cout << "Screen Coordinate: " << sx << " " << sy << endl;
+
+	QVector4D sNearP, sFarP;
+	sNearP = QVector4D(sx, sy, 1, 1);
+	sFarP = QVector4D(sx, sy, -1, 1);
+
+	QMatrix4x4 inv = (projectionMatrix*viewMatrix*translationMatrix*rotationMatrix).inverted();
+	nearP = (inv*sNearP).toVector3DAffine();
+	farP = (inv*sFarP).toVector3DAffine();
+}
+
 void Camera::rotateAroundZ(double d)
 {
 	QMatrix4x4 rotation;

@@ -19,8 +19,6 @@ public:
 	virtual void setFragmentShaderSource() = 0;
 
 	virtual void setData(std::vector<float> vd, std::vector<int> id, std::vector<float> nd, std::vector<float> cd) = 0;
-	virtual void setCamera(Camera c) = 0;
-
 	virtual void init() = 0;
 
 	void genVertexBuffer();
@@ -29,7 +27,10 @@ public:
 	void genColorBuffer();
 	virtual void genVertexArray() = 0;
 
-	void setLamp(float x, float y, float z, float power);
+
+	void setCamera(Camera c);
+	void setLightDistance(double d);
+	void setLamp();
 	void setMatrix();
 
 	virtual void render() = 0;
@@ -63,6 +64,7 @@ protected:
 	std::vector<float> colorData;
 	
 	Camera camera;
+	double lightDistance;
 };
 
 class MeshModule : public RenderModule
@@ -75,7 +77,6 @@ public:
 	void setFragmentShaderSource();
 
 	void setData(std::vector<float> vd, std::vector<int> id, std::vector<float> nd, std::vector<float> cd);
-	void setCamera(Camera c);
 
 	void genVertexArray();
 
@@ -93,7 +94,6 @@ public:
 	void setFragmentShaderSource();
 
 	void setData(std::vector<float> vd, std::vector<int> id, std::vector<float> nd, std::vector<float> cd);
-	void setCamera(Camera c);
 
 	void genVertexArray();
 

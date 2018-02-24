@@ -38,13 +38,23 @@ void RenderModule::genColorBuffer()
 	mColor->allocate(&colorData[0], colorData.size()*sizeof(float));
 }
 
-void RenderModule::setLamp(float x, float y, float z, float power)
+void RenderModule::setCamera(Camera c)
+{
+	camera = c;
+}
+
+void RenderModule::setLightDistance(double d)
+{
+	lightDistance = d;
+}
+
+void RenderModule::setLamp()
 {
 	lightDisID = mProgram->uniformLocation("LightDistance");
 	lightPowerID = mProgram->uniformLocation("LightPower");
 
-	mProgram->setUniformValue(lightDisID, z);
-	mProgram->setUniformValue(lightPowerID, GLfloat(power));
+	mProgram->setUniformValue(lightDisID, GLfloat(lightDistance));
+	mProgram->setUniformValue(lightPowerID, GLfloat(0.7*lightDistance*lightDistance));
 }
 
 void RenderModule::setMatrix()
@@ -213,7 +223,7 @@ void MeshModule::render()
 	genNormalBuffer();
 	genVertexArray();
 
-	setLamp(0, 0, 20, 400);
+	setLamp();
 	setMatrix();
 
 	mProgram->bind();
@@ -229,11 +239,6 @@ void MeshModule::setData(std::vector<float> vd, std::vector<int> id, std::vector
 	indexData = id;
 	normalData = nd;
 	colorData = cd;
-}
-
-void MeshModule::setCamera(Camera c)
-{
-	camera = c;
 }
 
 /*******************************************\
@@ -338,11 +343,6 @@ void WireFrameModule::setData(std::vector<float> vd, std::vector<int> id, std::v
 	colorData = cd;
 }
 
-void WireFrameModule::setCamera(Camera c)
-{
-	camera = c;
-}
-
 void WireFrameModule::genVertexArray()
 {
 	mVAO = new QOpenGLVertexArrayObject();
@@ -385,7 +385,7 @@ void WireFrameModule::render()
 	genNormalBuffer();
 	genVertexArray();
 
-	setLamp(0, 0, 20, 400);
+	setLamp();
 	setMatrix();
 
 	mProgram->bind();

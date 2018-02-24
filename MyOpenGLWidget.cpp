@@ -4,6 +4,9 @@ void OGLWidget::initializeGL()
 {
 	// general initialize
 	leftPressed = false;
+	faceSelection = false;
+	edgeSelection = false;
+	vertSelection = false;
 
 	// opengl initialize
 	initializeOpenGLFunctions();
@@ -28,6 +31,7 @@ void OGLWidget::paintGL()
 	for (int i = 0; i < rModules.size(); ++i)
 	{
 		rModules[i]->setCamera(camera);
+		rModules[i]->setLightDistance(5 * mesh->radius());
 		rModules[i]->render();
 	}
 }
@@ -41,7 +45,14 @@ void OGLWidget::resizeGL(int width, int height)
 
 void OGLWidget::mousePressEvent(QMouseEvent* event)
 {
-	if (event->button() == Qt::LeftButton)
+	cout << faceSelection << endl;
+	if (faceSelection && event->button() == Qt::LeftButton)
+	{
+		cout << "At Face Selection..."<< endl;
+
+		selectFace(event->x(), event->y());
+	}
+	else if (event->button() == Qt::LeftButton)
 	{
 		//cout << "@@@@@@@@@@@@@@@@@@@@@@@"<< endl;
 		leftPressed = true;
@@ -88,6 +99,34 @@ void OGLWidget::setMesh(Mesh* m)
 	mesh = m;
 }
 
+void OGLWidget::setKDTree()
+{
+	int num_verts, num_tris;
+	glm::vec3 *verts, *tris;
+	int k;
+	// import mesh data
+	num_verts = mesh->size_of_vertices();
+	verts = new glm::vec3[num_verts];
+	for (Vertex_iterator vi = mesh->vertices_begin(); vi != mesh->vertices_end(); ++vi)
+		verts[vi->idx()] = 
+		glm::vec3(vi->point().x() - mesh->xcenter(),
+			vi->point().y() - mesh->ycenter(),
+			vi->point().z() - mesh->zcenter());
+	num_tris = mesh->size_of_facets();
+	tris = new glm::vec3[num_tris];
+	for (Facet_iterator fi = mesh->facets_begin(); fi != mesh->facets_end(); ++fi)
+		tris[fi->idx()] =
+		glm::vec3(fi->halfedge()->vertex()->idx(),
+			fi->halfedge()->next()->vertex()->idx(),
+			fi->halfedge()->next()->next()->vertex()->idx());
+
+	kdTree = new KDTreeCPU(num_tris, tris, num_verts, verts);
+	
+	cout << "Num Verts: " << num_verts << endl;
+	cout << "Num Faces: " << num_tris << endl;
+	cout << "KD tree construction complete ..." << endl;
+}
+
 void OGLWidget::setRenderContexts()
 {
 	RenderModule* rm1 = new MeshModule();
@@ -106,17 +145,12 @@ void OGLWidget::setMeshModule(RenderModule* rm)
 	std::vector<float> n;
 	std::vector<float> c;
 
-	Point_3 cc(0, 0, 0);
-	for (Vertex_iterator vi = mesh->vertices_begin(); vi != mesh->vertices_end(); ++vi)
-		cc += Vector_3(vi->point().x(), vi->point().y(), vi->point().z());
-	Point_3 ccc(cc.x() / mesh->size_of_vertices(), cc.y() / mesh->size_of_vertices(), cc.z() / mesh->size_of_vertices());
-
 	for (Vertex_iterator vi = mesh->vertices_begin(); vi != mesh->vertices_end(); ++vi)
 	{
 		//cout << vi->point() << endl;
-		v.push_back(vi->point().x() - ccc.x());
-		v.push_back(vi->point().y() - ccc.y());
-		v.push_back(vi->point().z() - ccc.z());
+		v.push_back(vi->point().x() - mesh->xcenter());
+		v.push_back(vi->point().y() - mesh->ycenter());
+		v.push_back(vi->point().z() - mesh->zcenter());
 
 		n.push_back(vi->normal().x());
 		n.push_back(vi->normal().y());
@@ -149,17 +183,12 @@ void OGLWidget::setWireFrameModule(RenderModule* rm)
 	std::vector<float> n;
 	std::vector<float> c;
 
-	Point_3 cc(0, 0, 0);
-	for (Vertex_iterator vi = mesh->vertices_begin(); vi != mesh->vertices_end(); ++vi)
-		cc += Vector_3(vi->point().x(), vi->point().y(), vi->point().z());
-	Point_3 ccc(cc.x() / mesh->size_of_vertices(), cc.y() / mesh->size_of_vertices(), cc.z() / mesh->size_of_vertices());
-
 	for (Vertex_iterator vi = mesh->vertices_begin(); vi != mesh->vertices_end(); ++vi)
 	{
 		//cout << vi->point() << endl;
-		v.push_back(vi->point().x() - ccc.x());
-		v.push_back(vi->point().y() - ccc.y());
-		v.push_back(vi->point().z() - ccc.z());
+		v.push_back(vi->point().x() - mesh->xcenter());
+		v.push_back(vi->point().y() - mesh->ycenter());
+		v.push_back(vi->point().z() - mesh->zcenter());
 
 		n.push_back(vi->normal().x());
 		n.push_back(vi->normal().y());
@@ -182,9 +211,9 @@ void OGLWidget::setWireFrameModule(RenderModule* rm)
 void OGLWidget::setCamera()
 {
 
-	camera.setView(QVector3D(0, 0, 4 * (mesh->zmax() - mesh->zmin())), QVector3D(0, 0, 0), QVector3D(0, 1, 0));
+	camera.setView(QVector3D(0, 0, 5*mesh->radius()), QVector3D(0, 0, 0), QVector3D(0, 1, 0));
 
-	camera.setProject(45.0, 4.0 / 3.0, 0.01, 100);
+	camera.setProject(45.0, 4.0 / 3.0, 0.01, 10000);
 	
 	camera.init();
 }
@@ -211,4 +240,40 @@ void OGLWidget::printContextInformation()
 
 	// qPrintable() will print our QString w/o quotes around it.
 	qDebug() << qPrintable(glType) << qPrintable(glVersion) << "(" << qPrintable(glProfile) << ")";
+}
+
+void OGLWidget::setFaceSelection(bool b)
+{
+	faceSelection = b;
+}
+
+void OGLWidget::setEdgeSelection(bool b)
+{
+	edgeSelection = b;
+}
+
+void OGLWidget::setVertSelection(bool b)
+{
+	edgeSelection = b;
+}
+
+void OGLWidget::selectFace(int wx, int wy)
+{
+	QVector3D nearP, farP, d;
+	camera.getFarNearPointWorld(wx, wy, nearP, farP);
+	d = (farP - nearP).normalized();
+
+	cout << nearP.x()<<" " << nearP.y() << " " << nearP.z() << endl;
+	cout << farP.x() << " " << farP.y() << " " << farP.z() << endl;
+
+	glm::vec3 rayO, rayD, hitP, normal;
+	float t;
+	rayO = glm::vec3(nearP.x(), nearP.y(), nearP.z());
+	rayD = glm::vec3(d.x(), d.y(), d.z());
+	bool intersected = kdTree->intersect(rayO, rayD, t, hitP, normal);
+
+	cout << "Intersected: " << intersected << endl;
+	cout << "Hit Point: " << hitP.x<<" " << hitP.y << " " << hitP.z << endl;
+	cout << "Normal: " << normal.x << " " << normal.y << " " << normal.z << endl;
+	cout << endl;
 }

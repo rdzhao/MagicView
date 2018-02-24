@@ -3,10 +3,10 @@
 Viewer::Viewer(QWidget *parent)
 	: QMainWindow(parent)
 {
+	createCanvas();
 	createMenu();
 	createStatus();
 	createToolBar();
-	createCanvas();
 }
 
 void Viewer::createMenu()
@@ -41,6 +41,7 @@ void Viewer::createMenu()
 		faceAct->setCheckable(true);
 		faceAct->setChecked(false);
 		selectMenu->addAction(faceAct);
+		connect(faceAct, SIGNAL(triggered()), this, SLOT(checkFace()));
 		connect(faceAct, SIGNAL(triggered()), this, SLOT(uncheckEdge()));
 		connect(faceAct, SIGNAL(triggered()), this, SLOT(uncheckVert()));
 
@@ -49,6 +50,7 @@ void Viewer::createMenu()
 		edgeAct->setCheckable(true);
 		edgeAct->setChecked(false);
 		selectMenu->addAction(edgeAct);
+		connect(faceAct, SIGNAL(triggered()), this, SLOT(checkEdge()));
 		connect(edgeAct, SIGNAL(triggered()), this, SLOT(uncheckFace()));
 		connect(edgeAct, SIGNAL(triggered()), this, SLOT(uncheckVert()));
 
@@ -57,6 +59,7 @@ void Viewer::createMenu()
 		vertAct->setCheckable(true);
 		vertAct->setChecked(false);
 		selectMenu->addAction(vertAct);
+		connect(faceAct, SIGNAL(triggered()), this, SLOT(checkVert()));
 		connect(vertAct, SIGNAL(triggered()), this, SLOT(uncheckFace()));
 		connect(vertAct, SIGNAL(triggered()), this, SLOT(uncheckEdge()));
 	}
@@ -135,6 +138,7 @@ void Viewer::load()
 		mesh->compute_bounding_box();
 
 		canvas->setMesh(mesh);
+		canvas->setKDTree();
 		canvas->setRenderContexts();
 		canvas->setCamera();
 		canvas->update();
@@ -142,17 +146,38 @@ void Viewer::load()
 
 }
 
+void Viewer::checkFace()
+{
+	faceAct->setChecked(true);
+	canvas->setFaceSelection(true);
+}
+
+void Viewer::checkEdge()
+{
+	edgeAct->setChecked(true);
+	canvas->setEdgeSelection(true);
+}
+
+void Viewer::checkVert()
+{
+	vertAct->setChecked(true);
+	canvas->setVertSelection(true);
+}
+
 void Viewer::uncheckFace()
 {
 	faceAct->setChecked(false);
+	canvas->setFaceSelection(false);
 }
 
 void Viewer::uncheckEdge()
 {
 	edgeAct->setChecked(false);
+	canvas->setEdgeSelection(false);
 }
 
 void Viewer::uncheckVert()
 {
 	vertAct->setChecked(false);
+	canvas->setVertSelection(false);
 }

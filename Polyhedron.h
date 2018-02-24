@@ -202,6 +202,8 @@ private:
 	// bounding box
 	FT m_min[3];
 	FT m_max[3];
+	FT m_radius_approx;
+	FT m_center[3];
 
 	// type
 	bool m_pure_quad;
@@ -243,7 +245,7 @@ public:
 		int r = (int)((double)rand() / (double)RAND_MAX * (double)nbv);
 		r = (r >= nbv) ? nbv - 1 : r;
 		Vertex_iterator it = vertices_begin();
-		for (int i = 0; i<r; i++)
+		for (int i = 0; i < r; i++)
 			it++;
 		return it;
 	}
@@ -254,7 +256,7 @@ public:
 		int r = (int)((double)rand() / (double)RAND_MAX * (double)nbf);
 		r = (r >= nbf) ? nbf - 1 : r;
 		Facet_iterator it = facets_begin();
-		for (int i = 0; i<r; i++)
+		for (int i = 0; i < r; i++)
 			it++;
 		return it;
 	}
@@ -376,6 +378,13 @@ public:
 		m_min[0] = xmin; m_max[0] = xmax;
 		m_min[1] = ymin; m_max[1] = ymax;
 		m_min[2] = zmin; m_max[2] = zmax;
+
+		m_center[0] = (m_min[0] + m_max[0]) / 2;
+		m_center[1] = (m_min[1] + m_max[1]) / 2;
+		m_center[2] = (m_min[2] + m_max[2]) / 2;
+
+		m_radius_approx = max(m_max[0] - m_min[0], m_max[1] - m_min[1]);
+		m_radius_approx = max(m_max[2] - m_min[2], m_radius_approx) / 2;
 	}
 
 	// bounding box
@@ -385,6 +394,11 @@ public:
 	FT ymax() { return m_max[1]; }
 	FT zmin() { return m_min[2]; }
 	FT zmax() { return m_max[2]; }
+	FT xcenter() { return m_center[0]; }
+	FT ycenter() { return m_center[1]; }
+	FT zcenter() { return m_center[2]; }
+	FT radius() { return m_radius_approx; }
+
 
 	// copy bounding box
 	void copy_bounding_box(Enriched_polyhedron<kernel, items> *pMesh)

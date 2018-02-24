@@ -37,6 +37,8 @@ public:
 
 	void zoom();
 
+	void getFarNearPointWorld(int wx, int wy, QVector3D& nearP, QVector3D& farP);
+
 	// helper
 	void rotateAroundZ(double d); // test
 	void moveUnitCoordToPre();
