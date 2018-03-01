@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.1)
 
 project(MagicView)
 
@@ -12,11 +12,12 @@ find_package(CGAL)
 
 include(${CGAL_USE_FILE})
 
-include_directories(/glm/)
+add_subdirectory(glm)
 
-aux_source_directory(. SRCS)
+file(GLOB Headers "*.h")
+file(GLOB Sources "*.cpp")
 
-add_executable(MagicView ${SRCS})
+add_executable(MagicView ${Headers} ${Sources})
 
 qt5_use_modules(MagicView Widgets)
 qt5_use_modules(MagicView OpenGL)
