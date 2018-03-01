@@ -4,7 +4,7 @@ This project only supports windows platform x64.
 
 Basic implementation for viewing polyhedral mesh based on Qt GUI.
 
-Now this code includes a basic implementation for OpenGL rendering and arcball for user interaction.
+Now this code includes a basic implementation for OpenGL rendering, arcball and primitive selection for user interaction.
 
 Dependencies: CGAL and Qt5.
 
@@ -33,3 +33,6 @@ Qt5Widgets.dll
 
 ## Copy the following folder to .exe folder: <br />
 ${Qt5_LOCAL_DIR}\5.xx.0\msvcxxxx_64\plugins\platforms
+
+## References
+Ray Triangle intersection code is from https://github.com/jeremynewlin/Accel.
