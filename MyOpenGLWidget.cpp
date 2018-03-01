@@ -268,12 +268,17 @@ void OGLWidget::selectFace(int wx, int wy)
 
 	glm::vec3 rayO, rayD, hitP, normal;
 	float t;
+	int idx;
 	rayO = glm::vec3(nearP.x(), nearP.y(), nearP.z());
 	rayD = glm::vec3(d.x(), d.y(), d.z());
-	bool intersected = kdTree->intersect(rayO, rayD, t, hitP, normal);
+	bool intersected = kdTree->intersectNew(rayO, rayD, t, hitP, normal, idx);
 
 	cout << "Intersected: " << intersected << endl;
-	cout << "Hit Point: " << hitP.x<<" " << hitP.y << " " << hitP.z << endl;
-	cout << "Normal: " << normal.x << " " << normal.y << " " << normal.z << endl;
+	if (intersected)
+	{
+		cout << "Triangle Idx: " << idx << endl;
+		cout << "Hit Point: " << hitP.x << " " << hitP.y << " " << hitP.z << endl;
+		cout << "Normal: " << normal.x << " " << normal.y << " " << normal.z << endl;
+	}
 	cout << endl;
 }

@@ -29,12 +29,9 @@ public:
 	private slots:
 	void load();
 
-	void checkFace();
-	void checkEdge();
-	void checkVert();
-	void uncheckFace();
-	void uncheckEdge();
-	void uncheckVert();
+	void faceSelectionSlot();
+	void edgeSelectionSlot();
+	void vertSelectionSlot();
 
 private:
 	void createCanvas();

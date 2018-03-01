@@ -41,27 +41,21 @@ void Viewer::createMenu()
 		faceAct->setCheckable(true);
 		faceAct->setChecked(false);
 		selectMenu->addAction(faceAct);
-		connect(faceAct, SIGNAL(triggered()), this, SLOT(checkFace()));
-		connect(faceAct, SIGNAL(triggered()), this, SLOT(uncheckEdge()));
-		connect(faceAct, SIGNAL(triggered()), this, SLOT(uncheckVert()));
+		connect(faceAct, SIGNAL(triggered()), this, SLOT(faceSelectionSlot()));
 
 		edgeAct = new QAction("Select Edge", this);
 		edgeAct->setShortcut(Qt::Key::Key_1);
 		edgeAct->setCheckable(true);
 		edgeAct->setChecked(false);
 		selectMenu->addAction(edgeAct);
-		connect(faceAct, SIGNAL(triggered()), this, SLOT(checkEdge()));
-		connect(edgeAct, SIGNAL(triggered()), this, SLOT(uncheckFace()));
-		connect(edgeAct, SIGNAL(triggered()), this, SLOT(uncheckVert()));
+		connect(edgeAct, SIGNAL(triggered()), this, SLOT(edgeSelectionSlot()));
 
 		vertAct = new QAction("Select Vertex", this);
 		vertAct->setShortcut(Qt::Key::Key_2);
 		vertAct->setCheckable(true);
 		vertAct->setChecked(false);
 		selectMenu->addAction(vertAct);
-		connect(faceAct, SIGNAL(triggered()), this, SLOT(checkVert()));
-		connect(vertAct, SIGNAL(triggered()), this, SLOT(uncheckFace()));
-		connect(vertAct, SIGNAL(triggered()), this, SLOT(uncheckEdge()));
+		connect(vertAct, SIGNAL(triggered()), this, SLOT(vertSelectionSlot()));
 	}
 
 	opMenu = menuBar()->addMenu("Operation");
@@ -133,9 +127,7 @@ void Viewer::load()
 		ObjBuilder<HalfedgeDS> builder(reader.vertices(), reader.facets());
 		mesh->delegate(builder);
 
-		mesh->index_elements();
-		mesh->compute_normals();
-		mesh->compute_bounding_box();
+		mesh->basic_init();
 
 		canvas->setMesh(mesh);
 		canvas->setKDTree();
@@ -146,38 +138,61 @@ void Viewer::load()
 
 }
 
-void Viewer::checkFace()
+void Viewer::faceSelectionSlot()
 {
-	faceAct->setChecked(true);
-	canvas->setFaceSelection(true);
+	//cout << faceAct->isChecked() << endl;
+
+	if (faceAct->isChecked())
+	{
+		//faceAct->setChecked(true);
+		edgeAct->setChecked(false);
+		vertAct->setChecked(false);
+
+		canvas->setFaceSelection(true);
+		canvas->setEdgeSelection(false);
+		canvas->setVertSelection(false);
+	}
+	else
+	{
+		//faceAct->setChecked(false);
+		canvas->setFaceSelection(false);
+	}
 }
 
-void Viewer::checkEdge()
+void Viewer::edgeSelectionSlot()
 {
-	edgeAct->setChecked(true);
-	canvas->setEdgeSelection(true);
+	if (edgeAct->isChecked())
+	{
+		faceAct->setChecked(false);
+		//edgeAct->setChecked(true);
+		vertAct->setChecked(false);
+
+		canvas->setFaceSelection(false);
+		canvas->setEdgeSelection(true);
+		canvas->setVertSelection(false);
+	}
+	else
+	{
+		//edgeAct->setChecked(false);
+		canvas->setEdgeSelection(false);
+	}
 }
 
-void Viewer::checkVert()
+void Viewer::vertSelectionSlot()
 {
-	vertAct->setChecked(true);
-	canvas->setVertSelection(true);
-}
+	if (vertAct->isChecked())
+	{
+		faceAct->setChecked(false);
+		edgeAct->setChecked(false);
+		//vertAct->setChecked(true);
 
-void Viewer::uncheckFace()
-{
-	faceAct->setChecked(false);
-	canvas->setFaceSelection(false);
-}
-
-void Viewer::uncheckEdge()
-{
-	edgeAct->setChecked(false);
-	canvas->setEdgeSelection(false);
-}
-
-void Viewer::uncheckVert()
-{
-	vertAct->setChecked(false);
-	canvas->setVertSelection(false);
+		canvas->setFaceSelection(false);
+		canvas->setEdgeSelection(false);
+		canvas->setVertSelection(true);
+	}
+	else
+	{
+		//vertAct->setChecked(false);
+		canvas->setVertSelection(false);
+	}
 }

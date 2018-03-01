@@ -214,6 +214,11 @@ private:
 	unsigned int m_c;
 	unsigned int m_b;
 
+	// map from index to elements
+	std::map<int, Vertex_iterator> idx2Vertex;
+	std::map<int, Halfedge_iterator> idx2Halfedge;
+	std::map<int, Facet_iterator> idx2Facet;
+
 public:
 
 	unsigned int c() { return m_c; }
@@ -314,23 +319,36 @@ public:
 		return nb;
 	}
 
+	//basic init
+	void basic_init()
+	{
+		index_elements_build_map();
+		compute_normals();
+		compute_bounding_box();
+	}
 
 	// index all elements
-	void index_elements()
+	void index_elements_build_map()
 	{
 		int k;
 
 		k = 0;
-		for (Vertex_iterator vi = vertices_begin(); vi != vertices_end(); vi++, ++k)
+		for (Vertex_iterator vi = vertices_begin(); vi != vertices_end(); vi++, ++k) {
 			vi->idx() = k;
+			idx2Vertex[k] = vi;
+		}
 
 		k = 0;
-		for (Halfedge_iterator hei = halfedges_begin(); hei != halfedges_end(); hei++, ++k)
+		for (Halfedge_iterator hei = halfedges_begin(); hei != halfedges_end(); hei++, ++k) {
 			hei->idx() = k;
+			idx2Halfedge[k] = hei;
+		}
 
 		k = 0;
-		for (Facet_iterator fi = facets_begin(); fi != facets_end(); fi++, ++k)
+		for (Facet_iterator fi = facets_begin(); fi != facets_end(); fi++, ++k) {
 			fi->idx() = k;
+			idx2Facet[k] = fi;
+		}
 	}
 
 	// normals (per	facet, then	per	vertex)

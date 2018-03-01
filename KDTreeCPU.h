@@ -1,9 +1,10 @@
 #ifndef KD_TREE_CPU_H
 #define KD_TREE_CPU_H
 
+#include <limits>
+
 #include "boundingBox.h"
 #include "utils.h"
-#include <limits>
 #include "KDTreeStructs.h"
 
 
@@ -27,6 +28,7 @@ public:
 
 	// Public traversal method that begins recursive search.
 	bool intersect( const glm::vec3 &ray_o, const glm::vec3 &ray_dir, float &t, glm::vec3 &hit_point, glm::vec3 &normal ) const;
+	bool intersectNew(const glm::vec3 &ray_o, const glm::vec3 &ray_dir, float &t, glm::vec3 &hit_point, glm::vec3 &normal, int &idx) const;
 	bool singleRayStacklessIntersect( const glm::vec3 &ray_o, const glm::vec3 &ray_dir, float &t, glm::vec3 &hit_point, glm::vec3 &normal ) const;
 
 	void buildRopeStructure( void );
@@ -60,6 +62,7 @@ private:
 
 	// Private recursive traversal method.
 	bool intersect( KDTreeNode *curr_node, const glm::vec3 &ray_o, const glm::vec3 &ray_dir, float &t, glm::vec3 &normal ) const;
+	bool intersectNewRecur(KDTreeNode *curr_node, const glm::vec3 &ray_o, const glm::vec3 &ray_dir, float &t, glm::vec3 &normal, int &idx) const;
 	bool singleRayStacklessIntersect( KDTreeNode *curr_node, const glm::vec3 &ray_o, const glm::vec3 &ray_dir, float &t_entry, float &t_exit, glm::vec3 &normal ) const;
 
 	// Rope construction.

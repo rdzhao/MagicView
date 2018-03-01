@@ -364,6 +364,17 @@ bool KDTreeCPU::intersect( const glm::vec3 &ray_o, const glm::vec3 &ray_dir, flo
 	return hit;
 }
 
+bool KDTreeCPU::intersectNew(const glm::vec3 &ray_o, const glm::vec3 &ray_dir, float &t, glm::vec3 &hit_point, glm::vec3 &normal, int &idx) const
+{
+	t = INFINITY;
+	bool hit = intersectNewRecur(root, ray_o, ray_dir, t, normal, idx);
+	if (hit) {
+		hit_point = ray_o + (t * ray_dir);
+	}
+
+	return hit;
+}
+
 // Private recursive call.
 bool KDTreeCPU::intersect( KDTreeNode *curr_node, const glm::vec3 &ray_o, const glm::vec3 &ray_dir, float &t, glm::vec3 &normal ) const
 {
@@ -414,6 +425,55 @@ bool KDTreeCPU::intersect( KDTreeNode *curr_node, const glm::vec3 &ray_o, const 
 	return false;
 }
 
+// Private Recursive Call
+bool KDTreeCPU::intersectNewRecur(KDTreeNode *curr_node, const glm::vec3 &ray_o, const glm::vec3 &ray_dir, float &t, glm::vec3 &normal, int &idx) const
+{
+	// Perform ray/AABB intersection test.
+	float t_near, t_far;
+	bool intersects_aabb = Intersections::aabbIntersect(curr_node->bbox, ray_o, ray_dir, t_near, t_far);
+
+	if (intersects_aabb) {
+		// If current node is a leaf node.
+		if (!curr_node->left && !curr_node->right) {
+			// Check triangles for intersections.
+			bool intersection_detected = false;
+			for (int i = 0; i < curr_node->num_tris; ++i) {
+				glm::vec3 tri = tris[curr_node->tri_indices[i]];
+				glm::vec3 v0 = verts[(int)tri[0]];
+				glm::vec3 v1 = verts[(int)tri[1]];
+				glm::vec3 v2 = verts[(int)tri[2]];
+
+				// Perform ray/triangle intersection test.
+				float tmp_t = INFINITY;
+				glm::vec3 tmp_normal(0.0f, 0.0f, 0.0f);
+				bool intersects_tri = Intersections::triIntersect(ray_o, ray_dir, v0, v1, v2, tmp_t, tmp_normal);
+
+				if (intersects_tri) {
+					intersection_detected = true;
+					if (tmp_t < t) {
+						t = tmp_t;
+						idx = curr_node->tri_indices[i];
+						normal = tmp_normal;
+					}
+				}
+			}
+
+			return intersection_detected;
+		}
+		// Else, recurse.
+		else {
+			bool hit_left = false, hit_right = false;
+			if (curr_node->left) {
+				hit_left = intersectNewRecur(curr_node->left, ray_o, ray_dir, t, normal, idx);
+			}
+			if (curr_node->right) {
+				hit_right = intersectNewRecur(curr_node->right, ray_o, ray_dir, t, normal, idx);
+
+			return hit_left || hit_right;
+			}
+		}
+	}
+}
 
 ////////////////////////////////////////////////////
 // Single ray stackless kd-tree traversal method to test for intersections with passed-in ray.
