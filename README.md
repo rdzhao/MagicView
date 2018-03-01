@@ -10,7 +10,7 @@ Dependencies: CGAL and Qt5.
 
 Install CGAL and Qt for Windows. 
 
-Make sure the following environment variables are set:
+Make sure the following environment variables are set: <br />
 BOOST_LIBRARYDIR = ${BOOST_LOCAL_DIR}\lib64-msvc-xx.0
 BOOST_INCLUDEDIR = ${BOOST_LOCAL_DIR}
 CGAL_DIR = ${CGAL_LOCAL_DIR}
