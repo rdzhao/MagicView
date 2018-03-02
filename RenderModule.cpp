@@ -241,6 +241,24 @@ void MeshModule::setData(std::vector<float> vd, std::vector<int> id, std::vector
 	colorData = cd;
 }
 
+void MeshModule::highlightFace(int fidx)
+{
+	cout << "Highlight Face: "<< endl;
+	cout << indexData[3 * fidx] << " " << indexData[3 * fidx + 1] << " " << indexData[3 * fidx + 2] << endl;
+
+	colorData[3 * indexData[3 * fidx]] = 0.8;
+	colorData[3 * indexData[3 * fidx] + 1] = 0.2;
+	colorData[3 * indexData[3 * fidx] + 2] = 0.2;
+
+	colorData[3 * indexData[3 * fidx + 1]] = 0.8;
+	colorData[3 * indexData[3 * fidx + 1] + 1] = 0.2;
+	colorData[3 * indexData[3 * fidx + 1] + 2] = 0.2;
+
+	colorData[3 * indexData[3 * fidx + 2]] = 0.8;
+	colorData[3 * indexData[3 * fidx + 2] + 1] = 0.2;
+	colorData[3 * indexData[3 * fidx + 2] + 2] = 0.2;
+}
+
 /*******************************************\
 			Class WireFrameModule
 \*******************************************/

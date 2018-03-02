@@ -126,8 +126,8 @@ void Camera::getFarNearPointWorld(int wx, int wy, QVector3D& nearP, QVector3D& f
 	cout << "Screen Coordinate: " << sx << " " << sy << endl;
 
 	QVector4D sNearP, sFarP;
-	sNearP = QVector4D(sx, sy, 1, 1);
-	sFarP = QVector4D(sx, sy, -1, 1);
+	sNearP = QVector4D(sx, sy, -1, 1);
+	sFarP = QVector4D(sx, sy, 1, 1);
 
 	QMatrix4x4 inv = (projectionMatrix*viewMatrix*translationMatrix*rotationMatrix).inverted();
 	nearP = (inv*sNearP).toVector3DAffine();

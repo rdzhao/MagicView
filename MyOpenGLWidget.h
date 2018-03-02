@@ -63,6 +63,9 @@ private:
 
 private:
 	std::vector<RenderModule*> rModules;
+	RenderModule* meshModule;
+	RenderModule* wireFrameModule;
+
 	Camera camera;
 
 	bool leftPressed; // left button pressed or not

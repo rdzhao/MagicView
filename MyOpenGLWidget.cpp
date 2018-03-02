@@ -129,13 +129,13 @@ void OGLWidget::setKDTree()
 
 void OGLWidget::setRenderContexts()
 {
-	RenderModule* rm1 = new MeshModule();
-	rModules.push_back(rm1);
-	RenderModule* rm2 = new WireFrameModule();
-	rModules.push_back(rm2);
+	meshModule = new MeshModule();
+	rModules.push_back(meshModule);
+	wireFrameModule = new WireFrameModule();
+	rModules.push_back(wireFrameModule);
 
-	setMeshModule(rm1);
-	setWireFrameModule(rm2);
+	setMeshModule(meshModule);
+	setWireFrameModule(wireFrameModule);
 }
 
 void OGLWidget::setMeshModule(RenderModule* rm)
@@ -263,8 +263,8 @@ void OGLWidget::selectFace(int wx, int wy)
 	camera.getFarNearPointWorld(wx, wy, nearP, farP);
 	d = (farP - nearP).normalized();
 
-	cout << nearP.x()<<" " << nearP.y() << " " << nearP.z() << endl;
-	cout << farP.x() << " " << farP.y() << " " << farP.z() << endl;
+	//cout << nearP.x()<<" " << nearP.y() << " " << nearP.z() << endl;
+	//cout << farP.x() << " " << farP.y() << " " << farP.z() << endl;
 
 	glm::vec3 rayO, rayD, hitP, normal;
 	float t;
@@ -273,12 +273,18 @@ void OGLWidget::selectFace(int wx, int wy)
 	rayD = glm::vec3(d.x(), d.y(), d.z());
 	bool intersected = kdTree->intersectNew(rayO, rayD, t, hitP, normal, idx);
 
-	cout << "Intersected: " << intersected << endl;
+	//cout << "Intersected: " << intersected << endl;
+	//if (intersected)
+	//{
+	//	cout << "Triangle Idx: " << idx << endl;
+	//	cout << "Hit Point: " << hitP.x << " " << hitP.y << " " << hitP.z << endl;
+	//	cout << "Normal: " << normal.x << " " << normal.y << " " << normal.z << endl;
+	//}
+	//cout << endl;
+
 	if (intersected)
 	{
-		cout << "Triangle Idx: " << idx << endl;
-		cout << "Hit Point: " << hitP.x << " " << hitP.y << " " << hitP.z << endl;
-		cout << "Normal: " << normal.x << " " << normal.y << " " << normal.z << endl;
+		meshModule->highlightFace(idx);
+		update();
 	}
-	cout << endl;
 }

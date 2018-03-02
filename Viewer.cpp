@@ -140,11 +140,8 @@ void Viewer::load()
 
 void Viewer::faceSelectionSlot()
 {
-	//cout << faceAct->isChecked() << endl;
-
 	if (faceAct->isChecked())
 	{
-		//faceAct->setChecked(true);
 		edgeAct->setChecked(false);
 		vertAct->setChecked(false);
 
@@ -154,7 +151,6 @@ void Viewer::faceSelectionSlot()
 	}
 	else
 	{
-		//faceAct->setChecked(false);
 		canvas->setFaceSelection(false);
 	}
 }
@@ -164,7 +160,6 @@ void Viewer::edgeSelectionSlot()
 	if (edgeAct->isChecked())
 	{
 		faceAct->setChecked(false);
-		//edgeAct->setChecked(true);
 		vertAct->setChecked(false);
 
 		canvas->setFaceSelection(false);
@@ -173,7 +168,6 @@ void Viewer::edgeSelectionSlot()
 	}
 	else
 	{
-		//edgeAct->setChecked(false);
 		canvas->setEdgeSelection(false);
 	}
 }
@@ -184,7 +178,6 @@ void Viewer::vertSelectionSlot()
 	{
 		faceAct->setChecked(false);
 		edgeAct->setChecked(false);
-		//vertAct->setChecked(true);
 
 		canvas->setFaceSelection(false);
 		canvas->setEdgeSelection(false);
@@ -192,7 +185,6 @@ void Viewer::vertSelectionSlot()
 	}
 	else
 	{
-		//vertAct->setChecked(false);
 		canvas->setVertSelection(false);
 	}
 }

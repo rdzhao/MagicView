@@ -37,6 +37,8 @@ public:
 
 	void clear();
 
+	virtual void highlightFace(int fidx) {};
+
 protected:
 	QString vertexShaderSource;
 	QString fragmentShaderSource;
@@ -82,6 +84,9 @@ public:
 
 	void init();
 	void render();
+
+	// modifier
+	virtual void highlightFace(int fidx);
 };
 
 class WireFrameModule : public RenderModule
