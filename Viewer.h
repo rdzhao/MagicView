@@ -33,6 +33,8 @@ public:
 	void edgeSelectionSlot();
 	void vertSelectionSlot();
 
+	void clearSceneSlot();
+
 private:
 	void createCanvas();
 	void createMenu();
@@ -45,14 +47,17 @@ private:
 
 	// menu
 private:
-	QMenu* fileMenu;
-	QMenu* selectMenu;
-	QMenu* opMenu;
+	QMenu *fileMenu;
+	QMenu *sceneMenu;
+	QMenu *selectMenu;
+	QMenu *opMenu;
 
 	QAction *newAct;
 	QAction *openAct;
 	QAction *saveAct;
 	QAction *exitAct;
+
+	QAction *ClearAct;
 
 	QAction *faceAct;
 	QAction *edgeAct;

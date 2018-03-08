@@ -81,9 +81,7 @@ void RenderModule::clear()
 	mIndex->destroy();
 	mNormal->destroy();
 	mColor->destroy();
-
 	mVAO->destroy();
-
 	delete mProgram;
 }
 

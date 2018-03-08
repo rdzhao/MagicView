@@ -12,7 +12,7 @@ Viewer::Viewer(QWidget *parent)
 void Viewer::createMenu()
 {
 	fileMenu = menuBar()->addMenu("File");
-	fileMenu->setFixedWidth(150);
+	fileMenu->setFixedWidth(250);
 	{
 		newAct = new QAction("New", this);
 		newAct->setShortcuts(QKeySequence::New);
@@ -33,8 +33,17 @@ void Viewer::createMenu()
 		connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 	}
 
+	sceneMenu = menuBar()->addMenu("Scene");
+	sceneMenu->setFixedWidth(250);
+	{
+		ClearAct = new QAction("Clear Scene", this);
+		ClearAct->setShortcut(QKeySequence(tr("Ctrl+P")));
+		sceneMenu->addAction(ClearAct);
+		connect(ClearAct, SIGNAL(triggered()), this, SLOT(clearSceneSlot()));
+	}
+
 	selectMenu = menuBar()->addMenu("Selection");
-	selectMenu->setFixedWidth(150);
+	selectMenu->setFixedWidth(250);
 	{
 		faceAct = new QAction("Select Face", this);
 		faceAct->setShortcut(Qt::Key::Key_0);
@@ -59,7 +68,7 @@ void Viewer::createMenu()
 	}
 
 	opMenu = menuBar()->addMenu("Operation");
-	opMenu->setFixedWidth(150);
+	opMenu->setFixedWidth(250);
 	{
 		operationAct_1 = new QAction("Operation_1", this);
 		operationAct_1->setShortcut(tr("Crtl+O"));
@@ -194,4 +203,10 @@ void Viewer::vertSelectionSlot()
 	{
 		canvas->setVertSelection(false);
 	}
+}
+
+void Viewer::clearSceneSlot()
+{
+	canvas->clear();
+	canvas->update();
 }

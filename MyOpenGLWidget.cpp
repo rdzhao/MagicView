@@ -106,6 +106,18 @@ void OGLWidget::wheelEvent(QWheelEvent* event)
 	}
 }
 
+void OGLWidget::clear()
+{
+	//for (int i = 0; i < rModules.size(); ++i)
+	//	rModules[i]->clear();
+	rModules.clear();
+
+	mesh->clear();
+	delete kdTree;
+
+	selectedVerts.clear();
+}
+
 void OGLWidget::setMesh(Mesh* m)
 {
 	mesh = m;

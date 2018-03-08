@@ -48,6 +48,8 @@ public:
 	void mouseMoveEvent(QMouseEvent* event);
 	void wheelEvent(QWheelEvent* event);
 
+	void clear();
+
 	void setMesh(Mesh* m);
 	void setBall(Mesh* b);
 	void setKDTree();
