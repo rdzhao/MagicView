@@ -16,8 +16,9 @@ add_subdirectory(glm)
 
 file(GLOB Headers "*.h")
 file(GLOB Sources "*.cpp")
+file(GLOB Resources "resources/*.png")
 
-add_executable(MagicView ${Headers} ${Sources})
+add_executable(MagicView ${Headers} ${Sources} ${Resources})
 
 qt5_use_modules(MagicView Widgets)
 qt5_use_modules(MagicView OpenGL)

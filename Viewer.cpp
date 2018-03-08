@@ -113,15 +113,15 @@ void Viewer::createToolBar()
 	toolBar->setMinimumWidth(30);
 
 	showFaceAct = new QAction(this);
-	showFaceAct->setIcon(QIcon("Resources/1.png"));
+	showFaceAct->setIcon(QIcon("../../resources/one.png"));
 	toolBar->addAction(showFaceAct);
 
 	showEdgeAct = new QAction(this);
-	showEdgeAct->setIcon(QIcon("Resources/2.png"));
+	showEdgeAct->setIcon(QIcon("../../resources/two.png"));
 	toolBar->addAction(showEdgeAct);
 
 	showVertAct = new QAction(this);
-	showVertAct->setIcon(QIcon("Resources/3.png"));
+	showVertAct->setIcon(QIcon("../../resources/three.png"));
 	toolBar->addAction(showVertAct);
 }
 
