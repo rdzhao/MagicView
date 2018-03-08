@@ -11,6 +11,8 @@
 #include <CGAL/Simple_cartesian.h>
 //#include <CGAL/Polyhedron_incremental_builder_3.h>
 
+#include <limits>
+
 #include "RenderModule.h"
 #include "Camera.h"
 
@@ -26,6 +28,7 @@ typedef Enriched_polyhedron<Kernel, Enriched_items> Mesh;
 typedef Mesh::HalfedgeDS HalfedgeDS;
 typedef Mesh::Vertex_iterator Vertex_iterator;
 typedef Mesh::Edge_iterator Edge_iterator;
+typedef Mesh::Halfedge_iterator Halfedge_iterator;
 typedef Mesh::Facet_iterator Facet_iterator;
 typedef Mesh::Halfedge_around_facet_circulator Halfedge_around_facet_circulator;
 
@@ -46,17 +49,23 @@ public:
 	void wheelEvent(QWheelEvent* event);
 
 	void setMesh(Mesh* m);
+	void setBall(Mesh* b);
 	void setKDTree();
 	void setRenderContexts();
+	void setCamera();
+
 	void setMeshModule(RenderModule* rm);
 	void setWireFrameModule(RenderModule* rm);
-	void setCamera();
+	void addVertexHL(RenderModule* rm, float x, float y, float z);
+	void delVertexHL(RenderModule* rm, int pos);
 
 	void setFaceSelection(bool b);
 	void setEdgeSelection(bool b);
 	void setVertSelection(bool b);
 
 	void selectFace(int wx, int wy);
+	void selectEdge(int wx, int wy);
+	void selectVertex(int wx, int wy);
 
 private:
 	void printContextInformation();
@@ -65,12 +74,14 @@ private:
 	std::vector<RenderModule*> rModules;
 	RenderModule* meshModule;
 	RenderModule* wireFrameModule;
+	RenderModule* vertexHLModule;
 
 	Camera camera;
 
 	bool leftPressed; // left button pressed or not
 
 	Mesh* mesh;
+	Mesh* ball; // for highlighting vertex
 	KDTreeCPU* kdTree;
 
 	//status
@@ -78,4 +89,5 @@ private:
 	bool faceSelection;
 	bool edgeSelection;
 	bool vertSelection;
+	std::vector<int> selectedVerts;
 };

@@ -70,4 +70,5 @@ private:
 	//data
 private:
 	Mesh* mesh;
+	Mesh* ball;
 };

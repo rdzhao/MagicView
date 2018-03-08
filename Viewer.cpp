@@ -80,6 +80,16 @@ void Viewer::createCanvas()
 
 	canvas->setFormat(format);
 	canvas->show();
+
+	string fn = "ball.obj";
+	ObjReader<Kernel, Enriched_items> reader(fn);
+	reader.read();
+
+	ball = new Enriched_polyhedron<Kernel, Enriched_items>;
+	ObjBuilder<HalfedgeDS> builder(reader.vertices(), reader.facets());
+	ball->delegate(builder);
+	ball->basic_init();
+	canvas->setBall(ball);
 }
 
 void Viewer::createStatus()
@@ -118,15 +128,12 @@ void Viewer::load()
 	else 
 	{
 		string fn = fileName.toLocal8Bit().constData();
-
 		ObjReader<Kernel, Enriched_items> reader(fn);
 		reader.read();
 
 		mesh = new Enriched_polyhedron<Kernel, Enriched_items>;
-
 		ObjBuilder<HalfedgeDS> builder(reader.vertices(), reader.facets());
 		mesh->delegate(builder);
-
 		mesh->basic_init();
 
 		canvas->setMesh(mesh);

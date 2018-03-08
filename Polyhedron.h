@@ -23,10 +23,10 @@ private:
 	// tag
 	int	m_tag;
 
+	bool m_selected;
+
 	// normal
 	Norm m_normal;
-
-
 
 
 public:
@@ -47,11 +47,13 @@ public:
 	const int& tag() const { return m_tag; }
 	int& tag() { return m_tag; }
 
+	const bool& selected() const { return m_selected; }
+	bool& selected() { return m_selected; }
+
 	// normal
 	typedef	Norm Normal_3;
 	Normal_3&	normal() { return	m_normal; }
 	const	Normal_3&	normal() const { return	m_normal; }
-
 };
 
 
@@ -69,11 +71,15 @@ private:
 	// general-purpose tag
 	int	m_tag;
 
+	bool m_selected;
+
 	// option	for	edge superimposing
 	bool m_control_edge;
 
 	// cotan weight
 	double m_cotan;
+
+
 
 public:
 
@@ -92,15 +98,21 @@ public:
 	const int& tag() const { return m_tag; }
 	int& tag() { return m_tag; }
 
+	const bool& selected() const { return m_selected; }
+	bool& selected() { return m_selected; }
+
 	// cotan
 	const double& cotan() const { return m_cotan; }
 	double& cotan() { return m_cotan; }
 
-
-
 	// control edge	
 	bool& control_edge() { return m_control_edge; }
 	const bool& control_edge()	const { return m_control_edge; }
+
+	double length() 
+	{
+		return sqrt((vertex()->point() - opposite()->vertex()->point()).squared_length());
+	}
 };
 
 
@@ -119,6 +131,10 @@ private:
 	int m_idx;
 
 	int	m_tag;
+
+	bool m_selected;
+	int m_pos;
+
 	Normal m_normal;
 
 public:
@@ -140,10 +156,16 @@ public:
 	Normal&	normal() { return	m_normal; }
 	const	Normal&	normal() const { return	m_normal; }
 
-
 	// tag
 	int& tag() { return m_tag; }
 	const int& tag() const { return m_tag; }
+
+	const bool& selected() const { return m_selected; }
+	bool& selected() { return m_selected; }
+
+	int& pos() { return m_pos; }
+	const int& pos() const { return m_pos; }
+
 
 };
 
@@ -335,22 +357,40 @@ public:
 		k = 0;
 		for (Vertex_iterator vi = vertices_begin(); vi != vertices_end(); vi++, ++k) {
 			vi->idx() = k;
+			vi->selected() = false;
 			idx2Vertex[k] = vi;
 		}
 
 		k = 0;
 		for (Halfedge_iterator hei = halfedges_begin(); hei != halfedges_end(); hei++, ++k) {
 			hei->idx() = k;
+			hei->selected() = false;
 			idx2Halfedge[k] = hei;
 		}
 
 		k = 0;
 		for (Facet_iterator fi = facets_begin(); fi != facets_end(); fi++, ++k) {
 			fi->idx() = k;
+			fi->selected() = false;
 			idx2Facet[k] = fi;
 		}
 	}
 
+	Vertex_iterator vertex(int idx)
+	{
+		return idx2Vertex[idx];
+	}
+
+	Halfedge_iterator halfedge(int idx)
+	{
+		return idx2Halfedge[idx];
+	}
+
+	Facet_iterator facet(int idx)
+	{
+		return idx2Facet[idx];
+	}
+	
 	// normals (per	facet, then	per	vertex)
 	void compute_normals_per_facet()
 	{

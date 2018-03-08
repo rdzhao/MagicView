@@ -45,12 +45,24 @@ void OGLWidget::resizeGL(int width, int height)
 
 void OGLWidget::mousePressEvent(QMouseEvent* event)
 {
-	cout << faceSelection << endl;
+	cout << faceSelection << " " << edgeSelection << endl;
 	if (faceSelection && event->button() == Qt::LeftButton)
 	{
 		cout << "At Face Selection..."<< endl;
 
 		selectFace(event->x(), event->y());
+	}
+	else if (edgeSelection && event->button() == Qt::LeftButton)
+	{
+		cout << "At Edge Selection..." << endl;
+	
+		selectEdge(event->x(), event->y());
+	}
+	else if (vertSelection && event->button() == Qt::LeftButton)
+	{
+		cout << "At Vertex Selection..." << endl;
+
+		selectVertex(event->x(), event->y());
 	}
 	else if (event->button() == Qt::LeftButton)
 	{
@@ -99,6 +111,11 @@ void OGLWidget::setMesh(Mesh* m)
 	mesh = m;
 }
 
+void OGLWidget::setBall(Mesh* b)
+{
+	ball = b;
+}
+
 void OGLWidget::setKDTree()
 {
 	int num_verts, num_tris;
@@ -131,8 +148,12 @@ void OGLWidget::setRenderContexts()
 {
 	meshModule = new MeshModule();
 	rModules.push_back(meshModule);
+	
 	wireFrameModule = new WireFrameModule();
 	rModules.push_back(wireFrameModule);
+
+	vertexHLModule = new MeshModule();
+	rModules.push_back(vertexHLModule);
 
 	setMeshModule(meshModule);
 	setWireFrameModule(wireFrameModule);
@@ -145,37 +166,32 @@ void OGLWidget::setMeshModule(RenderModule* rm)
 	std::vector<float> n;
 	std::vector<float> c;
 
-	for (Vertex_iterator vi = mesh->vertices_begin(); vi != mesh->vertices_end(); ++vi)
-	{
-		//cout << vi->point() << endl;
-		v.push_back(vi->point().x() - mesh->xcenter());
-		v.push_back(vi->point().y() - mesh->ycenter());
-		v.push_back(vi->point().z() - mesh->zcenter());
-
-		n.push_back(vi->normal().x());
-		n.push_back(vi->normal().y());
-		n.push_back(vi->normal().z());
-
-		c.push_back(0.3);
-		c.push_back(0.5);
-		c.push_back(0.7);
-	}
-
 	for (Facet_iterator fi = mesh->facets_begin(); fi != mesh->facets_end(); ++fi)
 	{
 		Halfedge_around_facet_circulator he = fi->facet_begin();
 		Halfedge_around_facet_circulator end = he;
 
-		//cout << "^^^^^^^^^^^^^^^^^^^^"<< endl;
-		CGAL_For_all(he, end)
-		{
-			//cout << he->vertex()->idx() << endl;
-			idx.push_back(he->vertex()->idx());
-		}
+		do{
+			v.push_back(he->vertex()->point().x() - mesh->xcenter());
+			v.push_back(he->vertex()->point().y() - mesh->ycenter());
+			v.push_back(he->vertex()->point().z() - mesh->zcenter());
+
+			n.push_back(he->vertex()->normal().x());
+			n.push_back(he->vertex()->normal().y());
+			n.push_back(he->vertex()->normal().z());
+
+			c.push_back(0.5);
+			c.push_back(0.5);
+			c.push_back(0.5);
+
+			//idx.push_back(he->vertex()->idx());
+			++he;
+		} while (he != end);
 	}
 
 	rm->setData(v, idx, n, c);
 }
+
 void OGLWidget::setWireFrameModule(RenderModule* rm)
 {
 	std::vector<float> v;
@@ -183,29 +199,81 @@ void OGLWidget::setWireFrameModule(RenderModule* rm)
 	std::vector<float> n;
 	std::vector<float> c;
 
-	for (Vertex_iterator vi = mesh->vertices_begin(); vi != mesh->vertices_end(); ++vi)
+	for (Halfedge_iterator ei = mesh->edges_begin(); ei != mesh->edges_end(); ++ei, ++ei)
 	{
-		//cout << vi->point() << endl;
-		v.push_back(vi->point().x() - mesh->xcenter());
-		v.push_back(vi->point().y() - mesh->ycenter());
-		v.push_back(vi->point().z() - mesh->zcenter());
+		//cout << ei->idx() << " " << ei->opposite()->idx() << endl;
 
-		n.push_back(vi->normal().x());
-		n.push_back(vi->normal().y());
-		n.push_back(vi->normal().z());
+		v.push_back(ei->vertex()->point().x() - mesh->xcenter());
+		v.push_back(ei->vertex()->point().y() - mesh->ycenter());
+		v.push_back(ei->vertex()->point().z() - mesh->zcenter());
 
-		c.push_back(1);
-		c.push_back(0);
-		c.push_back(0);
-	}
+		n.push_back(ei->vertex()->normal().x());
+		n.push_back(ei->vertex()->normal().y());
+		n.push_back(ei->vertex()->normal().z());
 
-	for (Edge_iterator ei = mesh->edges_begin(); ei != mesh->edges_end(); ++ei)
-	{
-		idx.push_back(ei->vertex()->idx());
-		idx.push_back(ei->opposite()->vertex()->idx());
+		c.push_back(0.2);
+		c.push_back(0.2);
+		c.push_back(0.2);
+
+		v.push_back(ei->opposite()->vertex()->point().x() - mesh->xcenter());
+		v.push_back(ei->opposite()->vertex()->point().y() - mesh->ycenter());
+		v.push_back(ei->opposite()->vertex()->point().z() - mesh->zcenter());
+	
+		n.push_back(ei->opposite()->vertex()->normal().x());
+		n.push_back(ei->opposite()->vertex()->normal().y());
+		n.push_back(ei->opposite()->vertex()->normal().z());
+	
+		c.push_back(0.2);
+		c.push_back(0.2);
+		c.push_back(0.2);
 	}
 
 	rm->setData(v, idx, n, c);
+}
+
+void OGLWidget::addVertexHL(RenderModule* rm, float x, float y, float z)
+{
+	std::vector<float> v;
+	std::vector<int> idx;
+	std::vector<float> n;
+	std::vector<float> c;
+
+	double ave=0;
+	for (Halfedge_iterator hei = mesh->halfedges_begin(); hei != mesh->halfedges_end(); ++hei)
+		ave += hei->length();
+	ave /= 2 * mesh->size_of_halfedges();
+	float ratio = ave / ball->radius()*0.2;
+	
+	for (Facet_iterator fi = ball->facets_begin(); fi != ball->facets_end(); ++fi)
+	{
+		Halfedge_around_facet_circulator he = fi->facet_begin();
+		Halfedge_around_facet_circulator end = he;
+
+		do {
+			v.push_back((he->vertex()->point().x() - mesh->xcenter())*ratio + x - mesh->xcenter());
+			v.push_back((he->vertex()->point().y() - mesh->ycenter())*ratio + y - mesh->ycenter());
+			v.push_back((he->vertex()->point().z() - mesh->zcenter())*ratio + z - mesh->zcenter());
+
+			n.push_back(he->vertex()->normal().x());
+			n.push_back(he->vertex()->normal().y());
+			n.push_back(he->vertex()->normal().z());
+
+			c.push_back(0.8);
+			c.push_back(0.6);
+			c.push_back(0.2);
+
+			//idx.push_back(he->vertex()->idx());
+			++he;
+		} while (he != end);
+	}
+
+	rm->appData(v, idx, n, c);
+}
+
+void OGLWidget::delVertexHL(RenderModule* rm, int pos)
+{
+	int posBegin = pos*ball->size_of_facets() * 9;
+	rm->delData(posBegin, ball->size_of_facets() * 9);
 }
 
 void OGLWidget::setCamera()
@@ -254,7 +322,7 @@ void OGLWidget::setEdgeSelection(bool b)
 
 void OGLWidget::setVertSelection(bool b)
 {
-	edgeSelection = b;
+	vertSelection = b;
 }
 
 void OGLWidget::selectFace(int wx, int wy)
@@ -263,8 +331,26 @@ void OGLWidget::selectFace(int wx, int wy)
 	camera.getFarNearPointWorld(wx, wy, nearP, farP);
 	d = (farP - nearP).normalized();
 
-	//cout << nearP.x()<<" " << nearP.y() << " " << nearP.z() << endl;
-	//cout << farP.x() << " " << farP.y() << " " << farP.z() << endl;
+	glm::vec3 rayO, rayD, hitP, normal;
+	float t;
+	int idx;
+	rayO = glm::vec3(nearP.x(), nearP.y(), nearP.z());
+	rayD = glm::vec3(d.x(), d.y(), d.z());
+	bool intersected = kdTree->intersectNew(rayO, rayD, t, hitP, normal, idx);
+
+	if (intersected)
+	{
+		mesh->facet(idx)->selected() = !mesh->facet(idx)->selected();
+		meshModule->highlightFace(idx, mesh->facet(idx)->selected());
+		update();
+	}
+}
+
+void OGLWidget::selectEdge(int wx, int wy)
+{
+	QVector3D nearP, farP, d;
+	camera.getFarNearPointWorld(wx, wy, nearP, farP);
+	d = (farP - nearP).normalized();
 
 	glm::vec3 rayO, rayD, hitP, normal;
 	float t;
@@ -273,18 +359,89 @@ void OGLWidget::selectFace(int wx, int wy)
 	rayD = glm::vec3(d.x(), d.y(), d.z());
 	bool intersected = kdTree->intersectNew(rayO, rayD, t, hitP, normal, idx);
 
-	//cout << "Intersected: " << intersected << endl;
-	//if (intersected)
-	//{
-	//	cout << "Triangle Idx: " << idx << endl;
-	//	cout << "Hit Point: " << hitP.x << " " << hitP.y << " " << hitP.z << endl;
-	//	cout << "Normal: " << normal.x << " " << normal.y << " " << normal.z << endl;
-	//}
-	//cout << endl;
-
 	if (intersected)
 	{
-		meshModule->highlightFace(idx);
+		// choose the closest edge to the hit point
+		double distance = std::numeric_limits<double>::max();
+		int eIdx;
+
+		Point_3 hp(hitP.x + mesh->xcenter(), hitP.y + mesh->ycenter(), hitP.z + mesh->zcenter());
+		Facet_iterator fi = mesh->facet(idx);
+		Halfedge_iterator hei = fi->halfedge();
+		do {
+			Vector_3 ev, hv;
+			ev = hei->opposite()->vertex()->point() - hei->vertex()->point();
+			hv = hp - hei->vertex()->point();
+			glm::vec3 gev, ghv;
+			gev = glm::vec3(ev.x(), ev.y(), ev.z());
+			ghv = glm::vec3(hv.x(), hv.y(), hv.z());
+			double dis = glm::length((ghv - (glm::dot(ghv, glm::normalize(gev))*glm::normalize(gev))));
+
+			if (dis < distance)
+			{
+				distance = dis;
+				eIdx = hei->idx();
+			}
+
+			hei = hei->next();
+		} while (hei != fi->halfedge());
+
+		mesh->halfedge(eIdx)->selected() = !mesh->halfedge(eIdx)->selected();
+		mesh->halfedge(eIdx)->opposite()->selected() = mesh->halfedge(eIdx)->selected();
+		wireFrameModule->highlightEdge(eIdx, mesh->halfedge(eIdx)->selected());
+		update();
+	}
+}
+
+void OGLWidget::selectVertex(int wx, int wy)
+{
+	QVector3D nearP, farP, d;
+	camera.getFarNearPointWorld(wx, wy, nearP, farP);
+	d = (farP - nearP).normalized();
+
+	glm::vec3 rayO, rayD, hitP, normal;
+	float t;
+	int idx;
+	rayO = glm::vec3(nearP.x(), nearP.y(), nearP.z());
+	rayD = glm::vec3(d.x(), d.y(), d.z());
+	bool intersected = kdTree->intersectNew(rayO, rayD, t, hitP, normal, idx);
+
+	if (intersected){
+		double distance = std::numeric_limits<double>::max();
+		int vIdx;
+
+		glm::vec3 hp(hitP.x + mesh->xcenter(), hitP.y + mesh->ycenter(), hitP.z + mesh->zcenter());
+		Facet_iterator fi = mesh->facet(idx);
+		Halfedge_iterator hei = fi->halfedge();
+		do {
+			glm::vec3 gp(hei->vertex()->point().x(), hei->vertex()->point().y(), hei->vertex()->point().z());
+			double dis = glm::length(hp - gp);
+
+			if (dis < distance){
+				distance = dis;
+				vIdx = hei->vertex()->idx();
+			}
+
+			hei = hei->next();
+		} while (hei != fi->halfedge());
+		//cout << "Vertex Idx: " << vIdx << endl;
+
+		if (!mesh->vertex(vIdx)->selected()) {
+			selectedVerts.push_back(vIdx);
+			mesh->vertex(vIdx)->selected() = !mesh->vertex(vIdx)->selected();
+			mesh->vertex(vIdx)->pos() = selectedVerts.size() - 1;
+			addVertexHL(vertexHLModule, mesh->vertex(vIdx)->point().x(), mesh->vertex(vIdx)->point().y(), mesh->vertex(vIdx)->point().z());
+		}
+		else{
+			//update selected pos
+			selectedVerts.erase(selectedVerts.begin() + mesh->vertex(vIdx)->pos());
+			//update pos
+			for (int i = 0; i < selectedVerts.size(); ++i)
+				mesh->vertex(selectedVerts[i])->pos() = i;
+			mesh->vertex(vIdx)->selected() = !mesh->vertex(vIdx)->selected();
+			delVertexHL(vertexHLModule, mesh->vertex(vIdx)->pos());
+		}
+
 		update();
 	}
 }

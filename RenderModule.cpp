@@ -222,13 +222,14 @@ void MeshModule::render()
 	genColorBuffer();
 	genNormalBuffer();
 	genVertexArray();
-
+	
 	setLamp();
 	setMatrix();
-
+	
 	mProgram->bind();
 
-	glDrawElements(GL_TRIANGLES, indexData.size(), GL_UNSIGNED_INT, 0);
+	//glDrawElements(GL_TRIANGLES, indexData.size(), GL_UNSIGNED_INT, 0);
+	glDrawArrays(GL_TRIANGLES, 0, vertexData.size() / 3);
 
 	clear();
 }
@@ -241,22 +242,45 @@ void MeshModule::setData(std::vector<float> vd, std::vector<int> id, std::vector
 	colorData = cd;
 }
 
-void MeshModule::highlightFace(int fidx)
+void MeshModule::appData(std::vector<float> vd, std::vector<int> id, std::vector<float> nd, std::vector<float> cd)
 {
-	cout << "Highlight Face: "<< endl;
-	cout << indexData[3 * fidx] << " " << indexData[3 * fidx + 1] << " " << indexData[3 * fidx + 2] << endl;
+	vertexData.insert(vertexData.end(), vd.begin(), vd.end());
+	indexData.insert(indexData.end(), id.begin(), id.end());
+	normalData.insert(normalData.end(), nd.begin(), nd.end());
+	colorData.insert(colorData.end(), cd.begin(), cd.end());
+}
 
-	colorData[3 * indexData[3 * fidx]] = 0.8;
-	colorData[3 * indexData[3 * fidx] + 1] = 0.2;
-	colorData[3 * indexData[3 * fidx] + 2] = 0.2;
+void MeshModule::delData(int begin, int length)
+{
+	vertexData.erase(vertexData.begin() + begin, vertexData.begin() + begin + length);
+	normalData.erase(normalData.begin() + begin, normalData.begin() + begin + length);
+	colorData.erase(colorData.begin() + begin, colorData.begin() + begin + length);
+}
 
-	colorData[3 * indexData[3 * fidx + 1]] = 0.8;
-	colorData[3 * indexData[3 * fidx + 1] + 1] = 0.2;
-	colorData[3 * indexData[3 * fidx + 1] + 2] = 0.2;
-
-	colorData[3 * indexData[3 * fidx + 2]] = 0.8;
-	colorData[3 * indexData[3 * fidx + 2] + 1] = 0.2;
-	colorData[3 * indexData[3 * fidx + 2] + 2] = 0.2;
+void MeshModule::highlightFace(int fidx, bool mark)
+{
+	if (mark){
+		colorData[9 * fidx] = 0.6;
+		colorData[9 * fidx + 1] = 0.2;
+		colorData[9 * fidx + 2] = 0.2;
+		colorData[9 * fidx + 3] = 0.6;
+		colorData[9 * fidx + 4] = 0.2;
+		colorData[9 * fidx + 5] = 0.2;
+		colorData[9 * fidx + 6] = 0.6;
+		colorData[9 * fidx + 7] = 0.2;
+		colorData[9 * fidx + 8] = 0.2;
+	}
+	else{
+		colorData[9 * fidx] = 0.5;
+		colorData[9 * fidx + 1] = 0.5;
+		colorData[9 * fidx + 2] = 0.5;
+		colorData[9 * fidx + 3] = 0.5;
+		colorData[9 * fidx + 4] = 0.5;
+		colorData[9 * fidx + 5] = 0.5;
+		colorData[9 * fidx + 6] = 0.5;
+		colorData[9 * fidx + 7] = 0.5;
+		colorData[9 * fidx + 8] = 0.5;
+	}
 }
 
 /*******************************************\
@@ -361,6 +385,21 @@ void WireFrameModule::setData(std::vector<float> vd, std::vector<int> id, std::v
 	colorData = cd;
 }
 
+void WireFrameModule::appData(std::vector<float> vd, std::vector<int> id, std::vector<float> nd, std::vector<float> cd)
+{
+	vertexData.insert(vertexData.end(), vd.begin(), vd.end());
+	indexData.insert(indexData.end(), id.begin(), id.end());
+	normalData.insert(normalData.end(), nd.begin(), nd.end());
+	colorData.insert(colorData.end(), cd.begin(), cd.end());
+}
+
+void WireFrameModule::delData(int begin, int length)
+{
+	vertexData.erase(vertexData.begin() + begin, vertexData.begin() + begin + length);
+	normalData.erase(normalData.begin() + begin, normalData.begin() + begin + length);
+	colorData.erase(vertexData.begin() + begin, colorData.begin() + begin + length);
+}
+
 void WireFrameModule::genVertexArray()
 {
 	mVAO = new QOpenGLVertexArrayObject();
@@ -408,7 +447,31 @@ void WireFrameModule::render()
 
 	mProgram->bind();
 
-	glDrawElements(GL_LINES, indexData.size(), GL_UNSIGNED_INT, 0);
+	//glDrawElements(GL_LINES, indexData.size(), GL_UNSIGNED_INT, 0);
+	glLineWidth(3.0f);
+	glDrawArrays(GL_LINES, 0, vertexData.size() / 3);
 
 	clear();
+}
+
+void WireFrameModule::highlightEdge(int eIdx, bool mark)
+{
+	eIdx = eIdx / 2;
+
+	if (mark) {
+		colorData[6 * eIdx] = 0.2;
+		colorData[6 * eIdx + 1] = 0.6;
+		colorData[6 * eIdx + 2] = 0.6;
+		colorData[6 * eIdx + 3] = 0.2;
+		colorData[6 * eIdx + 4] = 0.6;
+		colorData[6 * eIdx + 5] = 0.6;
+	}
+	else{
+		colorData[6 * eIdx] = 0.2;
+		colorData[6 * eIdx + 1] = 0.2;
+		colorData[6 * eIdx + 2] = 0.2;
+		colorData[6 * eIdx + 3] = 0.2;
+		colorData[6 * eIdx + 4] = 0.2;
+		colorData[6 * eIdx + 5] = 0.2;
+	}
 }
