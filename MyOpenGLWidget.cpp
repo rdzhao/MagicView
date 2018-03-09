@@ -45,7 +45,7 @@ void OGLWidget::resizeGL(int width, int height)
 
 void OGLWidget::mousePressEvent(QMouseEvent* event)
 {
-	cout << faceSelection << " " << edgeSelection << endl;
+	//cout << faceSelection << " " << edgeSelection << endl;
 	if (faceSelection && event->button() == Qt::LeftButton)
 	{
 		cout << "At Face Selection..."<< endl;
@@ -75,6 +75,7 @@ void OGLWidget::mousePressEvent(QMouseEvent* event)
 		camera.setPRotationIdentity();
 	}
 }
+
 void OGLWidget::mouseReleaseEvent(QMouseEvent* event)
 {
 	if (event->button() == Qt::LeftButton)
@@ -82,6 +83,7 @@ void OGLWidget::mouseReleaseEvent(QMouseEvent* event)
 		leftPressed = false;
 	}
 }
+
 void OGLWidget::mouseMoveEvent(QMouseEvent* event)
 {
 	if (leftPressed)
@@ -96,6 +98,7 @@ void OGLWidget::mouseMoveEvent(QMouseEvent* event)
 		update();
 	}
 }
+
 void OGLWidget::wheelEvent(QWheelEvent* event)
 {
 	if (event->delta() != 0)
@@ -262,9 +265,9 @@ void OGLWidget::addVertexHL(RenderModule* rm, float x, float y, float z)
 		Halfedge_around_facet_circulator end = he;
 
 		do {
-			v.push_back((he->vertex()->point().x() - mesh->xcenter())*ratio + x - mesh->xcenter());
-			v.push_back((he->vertex()->point().y() - mesh->ycenter())*ratio + y - mesh->ycenter());
-			v.push_back((he->vertex()->point().z() - mesh->zcenter())*ratio + z - mesh->zcenter());
+			v.push_back((he->vertex()->point().x() - ball->xcenter())*ratio + x - mesh->xcenter());
+			v.push_back((he->vertex()->point().y() - ball->ycenter())*ratio + y - mesh->ycenter());
+			v.push_back((he->vertex()->point().z() - ball->zcenter())*ratio + z - mesh->zcenter());
 
 			n.push_back(he->vertex()->normal().x());
 			n.push_back(he->vertex()->normal().y());

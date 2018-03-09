@@ -81,14 +81,20 @@ private:
 			ss >> tag;
 
 			if (tag == "v")
-				parse_vertex(ss);
+				read_vertex(ss);
+
+			if (tag == "vt")
+				read_tex_coord(ss);
+
+			if (tag == "vn")
+				read_normal(ss);
 
 			if (tag == "f")
-				parse_facet(ss);
+				read_facet(ss);
 		}
 	}
 
-	void parse_vertex(stringstream& ss)
+	void read_vertex(stringstream& ss)
 	{
 		float x, y, z;
 		ss >> x >> y >> z;
@@ -97,20 +103,67 @@ private:
 		m_vertices.push_back(z);
 	}
 
-	void parse_facet(stringstream& ss)
+	void read_normal(stringstream& ss)
 	{
-		int v1, v2, v3;
-		ss >> v1 >> v2 >> v3;
-		m_facets.push_back(v1 - 1);
-		m_facets.push_back(v2 - 1);
-		m_facets.push_back(v3 - 1);
+		float x, y, z;
+		ss >> x >> y >> z;
+		m_normals.push_back(x);
+		m_normals.push_back(y);
+		m_normals.push_back(z);
+	}
+
+	void read_tex_coord(stringstream& ss)
+	{
+		float t1, t2;
+		ss >> t1 >> t2;
+		m_normals.push_back(t1);
+		m_normals.push_back(t2);
+	}
+
+	void read_facet(stringstream& ss)
+	{
+		string token;
+		while (ss >> token){
+			parse_facet_token(token);
+		}
+	}
+
+	void parse_facet_token(string& s)
+	{
+		stringstream ss(s);
+		string idx;
+		
+		int k = 0;
+		while (getline(ss, idx, '/'))
+		{
+			stringstream idxss(idx);
+			int idxval;
+			idxss >> idxval;
+			if (k == 0)
+				m_facets.push_back(idxval - 1);
+			else if (k == 1)
+				m_texCoordIdices.push_back(idxval - 1);
+			else if (k == 2)
+				m_normalIdices.push_back(idxval - 1);
+			else{
+				cout << "Error: facet info error."<< endl;
+				exit(0);
+			}
+				
+			++k;
+		}
+
 	}
 
 private:
 	string m_filename;
 
 	vector<float> m_vertices;
+	vector<float> m_normals;
+	vector<float> m_texCoords;
 	vector<int> m_facets;
+	vector<int> m_normalIdices;
+	vector<int> m_texCoordIdices;
 };
 
 
