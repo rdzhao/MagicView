@@ -85,6 +85,16 @@ void RenderModule::clear()
 	delete mProgram;
 }
 
+bool RenderModule::visible()
+{
+	return m_visible;
+}
+
+void RenderModule::setVisible(bool v)
+{
+	m_visible = v;
+}
+
 /*******************************************\
 		Class MeshModule
 \*******************************************/

@@ -63,6 +63,9 @@ public:
 	void addVertexHL(RenderModule* rm, float x, float y, float z);
 	void delVertexHL(RenderModule* rm, int pos);
 
+	void setFaceVisible(bool v);
+	void setEdgeVisible(bool v);
+
 	void setFaceSelection(bool b);
 	void setEdgeSelection(bool b);
 	void setVertSelection(bool b);

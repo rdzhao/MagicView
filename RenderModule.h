@@ -29,7 +29,6 @@ public:
 	void genColorBuffer();
 	virtual void genVertexArray() = 0;
 
-
 	void setCamera(Camera c);
 	void setLightDistance(double d);
 	void setLamp();
@@ -41,6 +40,9 @@ public:
 
 	virtual void highlightFace(int fidx, bool mark) {};
 	virtual void highlightEdge(int eIdx, bool mark) {};
+
+	bool visible();
+	void setVisible(bool v);
 
 protected:
 	QString vertexShaderSource;
@@ -70,12 +72,14 @@ protected:
 	
 	Camera camera;
 	double lightDistance;
+
+	bool m_visible;
 };
 
 class MeshModule : public RenderModule
 {
 public:
-	MeshModule() {};
+	MeshModule() { m_visible = true; };
 	~MeshModule() {};
 
 	void setVertexShaderSource();
@@ -97,7 +101,7 @@ public:
 class WireFrameModule : public RenderModule
 {
 public:
-	WireFrameModule() {};
+	WireFrameModule() { m_visible = false; };
 	~WireFrameModule() {};
 
 	void setVertexShaderSource();

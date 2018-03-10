@@ -29,6 +29,9 @@ public:
 	private slots:
 	void load();
 
+	void showFaceSlot();
+	void showEdgeSlot();
+
 	void faceSelectionSlot();
 	void edgeSelectionSlot();
 	void vertSelectionSlot();
@@ -59,18 +62,20 @@ private:
 
 	QAction *ClearAct;
 
-	QAction *faceAct;
-	QAction *edgeAct;
-	QAction *vertAct;
-
 	QAction *operationAct_1;
 
 private:
 	QToolBar * toolBar;
 
+	QAction *tbImportAct;
+	QAction *tbExportAct;
+
 	QAction *showFaceAct;
 	QAction *showEdgeAct;
-	QAction *showVertAct;
+
+	QAction *tbSelectFaceAct;
+	QAction *tbSelectEdgeAct;
+	QAction *tbSelectVertAct;
 	
 	//data
 private:

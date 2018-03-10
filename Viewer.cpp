@@ -11,6 +11,8 @@ Viewer::Viewer(QWidget *parent)
 
 void Viewer::createMenu()
 {
+	menuBar()->setMinimumHeight(25);
+
 	fileMenu = menuBar()->addMenu("File");
 	fileMenu->setFixedWidth(250);
 	{
@@ -40,31 +42,6 @@ void Viewer::createMenu()
 		ClearAct->setShortcut(QKeySequence(tr("Ctrl+P")));
 		sceneMenu->addAction(ClearAct);
 		connect(ClearAct, SIGNAL(triggered()), this, SLOT(clearSceneSlot()));
-	}
-
-	selectMenu = menuBar()->addMenu("Selection");
-	selectMenu->setFixedWidth(250);
-	{
-		faceAct = new QAction("Select Face", this);
-		faceAct->setShortcut(Qt::Key::Key_0);
-		faceAct->setCheckable(true);
-		faceAct->setChecked(false);
-		selectMenu->addAction(faceAct);
-		connect(faceAct, SIGNAL(triggered()), this, SLOT(faceSelectionSlot()));
-
-		edgeAct = new QAction("Select Edge", this);
-		edgeAct->setShortcut(Qt::Key::Key_1);
-		edgeAct->setCheckable(true);
-		edgeAct->setChecked(false);
-		selectMenu->addAction(edgeAct);
-		connect(edgeAct, SIGNAL(triggered()), this, SLOT(edgeSelectionSlot()));
-
-		vertAct = new QAction("Select Vertex", this);
-		vertAct->setShortcut(Qt::Key::Key_2);
-		vertAct->setCheckable(true);
-		vertAct->setChecked(false);
-		selectMenu->addAction(vertAct);
-		connect(vertAct, SIGNAL(triggered()), this, SLOT(vertSelectionSlot()));
 	}
 
 	opMenu = menuBar()->addMenu("Operation");
@@ -109,20 +86,64 @@ void Viewer::createStatus()
 void Viewer::createToolBar()
 {
 	toolBar = addToolBar("Tools");
-	toolBar->setMinimumHeight(30);
-	toolBar->setMinimumWidth(30);
+	toolBar->setMinimumHeight(50);
+	toolBar->setMinimumWidth(50);
+	toolBar->setIconSize(QSize(45, 45));
+
+	tbImportAct = new QAction(this);
+	tbImportAct->setIcon(QIcon("../../resources/import.png"));
+	tbImportAct->setText("Import Mesh");
+	toolBar->addAction(tbImportAct);
+	connect(tbImportAct, SIGNAL(triggered()), this, SLOT(load()));
+
+	tbExportAct = new QAction(this);
+	tbExportAct->setIcon(QIcon("../../resources/export.png"));
+	tbExportAct->setText("Export Mesh");
+	toolBar->addAction(tbExportAct);
+
+	toolBar->addSeparator();
 
 	showFaceAct = new QAction(this);
-	showFaceAct->setIcon(QIcon("../../resources/one.png"));
+	showFaceAct->setIcon(QIcon("../../resources/show_face.png"));
+	showFaceAct->setText("Show Face");
+	showFaceAct->setCheckable(true);
+	showFaceAct->setChecked(true);
 	toolBar->addAction(showFaceAct);
+	connect(showFaceAct, SIGNAL(triggered()), this, SLOT(showFaceSlot()));
 
 	showEdgeAct = new QAction(this);
-	showEdgeAct->setIcon(QIcon("../../resources/two.png"));
+	showEdgeAct->setIcon(QIcon("../../resources/show_edge.png"));
+	showEdgeAct->setText("Show Wireframe");
+	showEdgeAct->setCheckable(true);
+	showEdgeAct->setChecked(false);
 	toolBar->addAction(showEdgeAct);
+	connect(showEdgeAct, SIGNAL(triggered()), this, SLOT(showEdgeSlot()));
 
-	showVertAct = new QAction(this);
-	showVertAct->setIcon(QIcon("../../resources/three.png"));
-	toolBar->addAction(showVertAct);
+	toolBar->addSeparator();
+
+	tbSelectFaceAct = new QAction();
+	tbSelectFaceAct->setIcon(QIcon("../../resources/select_face.png"));
+	tbSelectFaceAct->setText("Select Face");
+	tbSelectFaceAct->setCheckable(true);
+	tbSelectFaceAct->setChecked(false);
+	toolBar->addAction(tbSelectFaceAct);
+	connect(tbSelectFaceAct, SIGNAL(triggered()), this, SLOT(faceSelectionSlot()));
+	
+	tbSelectEdgeAct = new QAction();
+	tbSelectEdgeAct->setIcon(QIcon("../../resources/select_edge.png"));
+	tbSelectEdgeAct->setText("Select Edge");
+	tbSelectEdgeAct->setCheckable(true);
+	tbSelectEdgeAct->setChecked(false);
+	toolBar->addAction(tbSelectEdgeAct);
+	connect(tbSelectEdgeAct, SIGNAL(triggered()), this, SLOT(edgeSelectionSlot()));
+
+	tbSelectVertAct = new QAction();
+	tbSelectVertAct->setIcon(QIcon("../../resources/select_vertex.png"));
+	tbSelectVertAct->setText("Select Vertex");
+	tbSelectVertAct->setCheckable(true);
+	tbSelectVertAct->setChecked(false);
+	toolBar->addAction(tbSelectVertAct);
+	connect(tbSelectVertAct, SIGNAL(triggered()), this, SLOT(vertSelectionSlot()));
 }
 
 // Slots
@@ -154,12 +175,22 @@ void Viewer::load()
 
 }
 
+void Viewer::showFaceSlot()
+{
+	canvas->setFaceVisible(showFaceAct->isChecked());
+}
+
+void Viewer::showEdgeSlot()
+{
+	canvas->setEdgeVisible(showEdgeAct->isChecked());
+}
+
 void Viewer::faceSelectionSlot()
 {
-	if (faceAct->isChecked())
+	if (tbSelectFaceAct->isChecked())
 	{
-		edgeAct->setChecked(false);
-		vertAct->setChecked(false);
+		tbSelectEdgeAct->setChecked(false);
+		tbSelectVertAct->setChecked(false);
 
 		canvas->setFaceSelection(true);
 		canvas->setEdgeSelection(false);
@@ -173,10 +204,10 @@ void Viewer::faceSelectionSlot()
 
 void Viewer::edgeSelectionSlot()
 {
-	if (edgeAct->isChecked())
+	if (tbSelectEdgeAct->isChecked())
 	{
-		faceAct->setChecked(false);
-		vertAct->setChecked(false);
+		tbSelectFaceAct->setChecked(false);
+		tbSelectVertAct->setChecked(false);
 
 		canvas->setFaceSelection(false);
 		canvas->setEdgeSelection(true);
@@ -190,10 +221,10 @@ void Viewer::edgeSelectionSlot()
 
 void Viewer::vertSelectionSlot()
 {
-	if (vertAct->isChecked())
+	if (tbSelectVertAct->isChecked())
 	{
-		faceAct->setChecked(false);
-		edgeAct->setChecked(false);
+		tbSelectFaceAct->setChecked(false);
+		tbSelectEdgeAct->setChecked(false);
 
 		canvas->setFaceSelection(false);
 		canvas->setEdgeSelection(false);

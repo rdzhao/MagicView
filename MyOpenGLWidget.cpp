@@ -30,9 +30,12 @@ void OGLWidget::paintGL()
 
 	for (int i = 0; i < rModules.size(); ++i)
 	{
-		rModules[i]->setCamera(camera);
-		rModules[i]->setLightDistance(5 * mesh->radius());
-		rModules[i]->render();
+		if (rModules[i]->visible())
+		{
+			rModules[i]->setCamera(camera);
+			rModules[i]->setLightDistance(5 * mesh->radius());
+			rModules[i]->render();
+		}
 	}
 }
 
@@ -359,6 +362,18 @@ void OGLWidget::printContextInformation()
 
 	// qPrintable() will print our QString w/o quotes around it.
 	qDebug() << qPrintable(glType) << qPrintable(glVersion) << "(" << qPrintable(glProfile) << ")";
+}
+
+void OGLWidget::setFaceVisible(bool v)
+{
+	meshModule->setVisible(v);
+	update();
+}
+
+void OGLWidget::setEdgeVisible(bool v)
+{
+	wireFrameModule->setVisible(v);
+	update();
 }
 
 void OGLWidget::setFaceSelection(bool b)
