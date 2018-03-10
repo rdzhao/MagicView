@@ -9,8 +9,11 @@ Now this code includes a basic implementation for OpenGL rendering, arcball and 
 Dependencies: CGAL and Qt5. Install CGAL and Qt for Windows first. 
 
 # GUI Example
-![alt text](https://github.com/rdzhao/QtViewer/blob/master/illustration/example_1.png)
-![alt text](https://github.com/rdzhao/QtViewer/blob/master/illustration/example_2.png)
+This example shows loading a large mesh.
+![alt text](https://github.com/rdzhao/QtViewer/blob/master/illustration/example_2.png = 400*400)
+
+This example shows face, edge and vertext selection. 
+![alt text](https://github.com/rdzhao/QtViewer/blob/master/illustration/example_1.png = 400*400)
 
 ## Make sure the following environment variables are set: <br />
 BOOST_LIBRARYDIR = ${BOOST_LOCAL_DIR}\lib64-msvc-xx.0 <br />
