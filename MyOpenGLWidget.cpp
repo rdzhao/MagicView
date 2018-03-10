@@ -65,6 +65,7 @@ void OGLWidget::mousePressEvent(QMouseEvent* event)
 	}
 	else if (event->button() == Qt::LeftButton)
 	{
+		//cout << event->x()<<" "<< event->y() << endl;
 		leftPressed = true;
 
 		camera.setPWX(event->x());

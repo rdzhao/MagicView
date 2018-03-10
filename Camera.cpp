@@ -94,7 +94,7 @@ void Camera::move(double approxBBSize)
 	cam_pos = (rotationMatrix*translationMatrix).inverted()*cam_pos;
 
 	QMatrix4x4 translation;
-	translation.translate(((rotationMatrix.inverted()*dirV).toVector3DAffine())*cam_pos.length() / approxBBSize*0.2);
+	translation.translate(((rotationMatrix.inverted()*dirV).toVector3DAffine())*approxBBSize);
 	
 	translationMatrix = translation*pTranslation.inverted()*translationMatrix;
 	pTranslation = translation;
@@ -128,7 +128,7 @@ void Camera::zoom()
 	if (scroll < 0 && moveLen>-0.001)
 		moveLen = 0;
 	zoomRatio *= pow(0.9, -scroll / 120);
-	cout << moveLen << endl;
+	//cout << moveLen << endl;
 	translation.translate(cam_pos.normalized()*moveLen);
 	translationMatrix *= translation;
 }
