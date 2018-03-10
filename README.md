@@ -1,6 +1,6 @@
 # QtViewer
 
-This project only supports windows platform x64.
+This project only supports Visual Studio 2015+ x64.
 
 Basic implementation for viewing polyhedral mesh based on Qt GUI.
 
