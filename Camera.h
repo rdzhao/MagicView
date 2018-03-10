@@ -71,4 +71,5 @@ private:
 
 	// zoom
 	int scroll;
+	double zoomRatio;
 };

@@ -45,7 +45,6 @@ void OGLWidget::resizeGL(int width, int height)
 
 void OGLWidget::mousePressEvent(QMouseEvent* event)
 {
-	//cout << faceSelection << " " << edgeSelection << endl;
 	if (faceSelection && event->button() == Qt::LeftButton)
 	{
 		cout << "At Face Selection..."<< endl;
@@ -66,7 +65,6 @@ void OGLWidget::mousePressEvent(QMouseEvent* event)
 	}
 	else if (event->button() == Qt::LeftButton)
 	{
-		//cout << "@@@@@@@@@@@@@@@@@@@@@@@"<< endl;
 		leftPressed = true;
 
 		camera.setPWX(event->x());
@@ -83,6 +81,12 @@ void OGLWidget::mousePressEvent(QMouseEvent* event)
 		camera.updatePUnitCoord();
 		camera.setPTranslationIdentity();
 	}
+}
+
+void OGLWidget::mouseDoubleClickEvent(QMouseEvent* event)
+{
+	setCamera();
+	update();
 }
 
 void OGLWidget::mouseReleaseEvent(QMouseEvent* event)
@@ -112,7 +116,6 @@ void OGLWidget::mouseMoveEvent(QMouseEvent* event)
 	}
 	else if (rightPressed)
 	{
-		cout << "Moving ... "<< endl;
 		camera.setWX(event->x());
 		camera.setWY(event->y());
 		camera.updateUnitCoord();

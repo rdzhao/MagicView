@@ -69,6 +69,8 @@ void Camera::init()
 
 	viewMatrix.lookAt(pos, center, up);
 	projectionMatrix.perspective(fieldOfView, aspectRatio, nearPlane, farPlane);
+
+	zoomRatio = 1;
 }
 
 void Camera::updateUnitCoord()
@@ -122,11 +124,12 @@ void Camera::zoom()
 
 	QMatrix4x4 translation;
 
-	double moveLen = (scroll*1.0 / 1200)*cam_pos.length();
-	if (cam_pos.length() < 0.001 && scroll < 0)
+	double moveLen = (zoomRatio*pow(0.9, -scroll / 120) - zoomRatio)*cam_pos.length();
+	if (scroll < 0 && moveLen>-0.001)
 		moveLen = 0;
+	zoomRatio *= pow(0.9, -scroll / 120);
+	cout << moveLen << endl;
 	translation.translate(cam_pos.normalized()*moveLen);
-
 	translationMatrix *= translation;
 }
 
