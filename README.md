@@ -44,4 +44,4 @@ Ray Triangle intersection code is from https://github.com/jeremynewlin/Accel.
 
 Import and export icons are from https://icons8.com.
 
-Black curor-clicked icon is from https://www.shareicon.net, which is integrated in face, edge and vertex selection icon.
+Black cursor-clicked icon is from https://www.shareicon.net, which is integrated in face, edge and vertex selection icon.
