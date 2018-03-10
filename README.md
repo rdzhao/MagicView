@@ -1,4 +1,4 @@
-# QtViewer
+# MagicView
 
 This project only supports Visual Studio 2015+ x64.
 
