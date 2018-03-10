@@ -50,6 +50,11 @@ void Camera::setPRotationIdentity()
 	pRotation.setToIdentity();
 }
 
+void Camera::setPTranslationIdentity()
+{
+	pTranslation.setToIdentity();
+}
+
 void Camera::setscroll(int val)
 {
 	scroll = val;
@@ -69,8 +74,6 @@ void Camera::init()
 void Camera::updateUnitCoord()
 {
 	toScreenCoord(winX, winY, unitX, unitY);
-	//cout << winWidth << " " << winHeight << endl;
-	//cout << initUX << " " << initUX << endl;
 }
 
 void Camera::updatePUnitCoord()
@@ -78,16 +81,30 @@ void Camera::updatePUnitCoord()
 	toScreenCoord(preWinX, preWinY, preUnitX, preUnitY);
 }
 
+void Camera::move(double approxBBSize)
+{
+	QVector3D initV(preUnitX, preUnitY, 0);
+	QVector3D dragV(unitX, unitY, 0);
+	QVector4D dirV = QVector4D(dragV - initV, 1);
+
+	QMatrix4x4 vm_inv = (viewMatrix*rotationMatrix*translationMatrix)/*.inverted()*/;
+	QVector3D cam_pos = (vm_inv.column(3)).toVector3DAffine();
+	cam_pos = (rotationMatrix*translationMatrix).inverted()*cam_pos;
+
+	QMatrix4x4 translation;
+	translation.translate(((rotationMatrix.inverted()*dirV).toVector3DAffine())*cam_pos.length() / approxBBSize*0.2);
+	
+	translationMatrix = translation*pTranslation.inverted()*translationMatrix;
+	pTranslation = translation;
+}
+
 void Camera::arcballRotate()
 {
 	QVector3D initV(preUnitX, preUnitY, qSqrt(2 - preUnitX*preUnitX - preUnitY*preUnitY));
 	QVector3D dragV(unitX, unitY, qSqrt(2 - unitX*unitX - unitY*unitY));
 
-	//cout << "Look! " << dragV.x() << " " << dragV.y() << " " << dragV.z() << endl;
-
 	QVector3D axis = QVector3D::crossProduct(initV, dragV);
 	double angle = atan2(QVector3D::dotProduct(QVector3D::crossProduct(initV, dragV), axis), QVector3D::dotProduct(initV, dragV));
-	//cout << axis.x()<<" "<<axis.y()<<" "<<axis.z()<<" "<<angle << endl;
 
 	QMatrix4x4 rotation;
 	rotation.rotate(1.5*angle * 180 / M_PI, axis);
@@ -99,13 +116,11 @@ void Camera::arcballRotate()
 void Camera::zoom()
 {
 	//get camera position;
-	QMatrix4x4 vm_inv = (viewMatrix*translationMatrix*rotationMatrix)/*.inverted()*/;
+	QMatrix4x4 vm_inv = (viewMatrix*rotationMatrix*translationMatrix)/*.inverted()*/;
 	QVector3D cam_pos = (vm_inv.column(3)).toVector3DAffine();
-
-	//cout << eye_unit[0]<<" " << eye_unit[1] << " " << eye_unit[2]  << endl;
+	cam_pos = (rotationMatrix*translationMatrix).inverted()*cam_pos;
 
 	QMatrix4x4 translation;
-	//translation.translate(scroll*0.001*eye_unit);
 
 	double moveLen = (scroll*1.0 / 1200)*cam_pos.length();
 	if (cam_pos.length() < 0.001 && scroll < 0)
@@ -125,7 +140,7 @@ void Camera::getFarNearPointWorld(int wx, int wy, QVector3D& nearP, QVector3D& f
 	sNearP = QVector4D(sx, sy, -1, 1);
 	sFarP = QVector4D(sx, sy, 1, 1);
 
-	QMatrix4x4 inv = (projectionMatrix*viewMatrix*translationMatrix*rotationMatrix).inverted();
+	QMatrix4x4 inv = (projectionMatrix*viewMatrix*rotationMatrix*translationMatrix).inverted();
 	nearP = (inv*sNearP).toVector3DAffine();
 	farP = (inv*sFarP).toVector3DAffine();
 }

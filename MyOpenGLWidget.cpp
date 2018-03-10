@@ -74,6 +74,15 @@ void OGLWidget::mousePressEvent(QMouseEvent* event)
 		camera.updatePUnitCoord();
 		camera.setPRotationIdentity();
 	}
+	else if (event->button() == Qt::RightButton)
+	{
+		rightPressed = true;
+
+		camera.setPWX(event->x());
+		camera.setPWY(event->y());
+		camera.updatePUnitCoord();
+		camera.setPTranslationIdentity();
+	}
 }
 
 void OGLWidget::mouseReleaseEvent(QMouseEvent* event)
@@ -81,6 +90,10 @@ void OGLWidget::mouseReleaseEvent(QMouseEvent* event)
 	if (event->button() == Qt::LeftButton)
 	{
 		leftPressed = false;
+	}
+	else if (event->button() == Qt::RightButton)
+	{
+		rightPressed = false;
 	}
 }
 
@@ -95,6 +108,18 @@ void OGLWidget::mouseMoveEvent(QMouseEvent* event)
 		camera.updateUnitCoord();
 
 		camera.arcballRotate();
+		update();
+	}
+	else if (rightPressed)
+	{
+		cout << "Moving ... "<< endl;
+		camera.setWX(event->x());
+		camera.setWY(event->y());
+		camera.updateUnitCoord();
+
+		double ratio = mesh->radius();
+
+		camera.move(ratio);
 		update();
 	}
 }
@@ -133,6 +158,8 @@ void OGLWidget::setBall(Mesh* b)
 
 void OGLWidget::setKDTree()
 {
+	auto start = std::chrono::system_clock::now();
+
 	int num_verts, num_tris;
 	glm::vec3 *verts, *tris;
 	int k;
@@ -157,6 +184,11 @@ void OGLWidget::setKDTree()
 	cout << "Num Verts: " << num_verts << endl;
 	cout << "Num Faces: " << num_tris << endl;
 	cout << "KD tree construction complete ..." << endl;
+
+	auto end = std::chrono::system_clock::now();
+	std::chrono::duration<double> elapsed_seconds = end - start;
+	cout << "Construction Time: " << elapsed_seconds.count() << endl;
+
 }
 
 void OGLWidget::setRenderContexts()

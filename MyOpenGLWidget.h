@@ -12,6 +12,7 @@
 //#include <CGAL/Polyhedron_incremental_builder_3.h>
 
 #include <limits>
+#include <chrono>
 
 #include "RenderModule.h"
 #include "Camera.h"
@@ -81,6 +82,7 @@ private:
 	Camera camera;
 
 	bool leftPressed; // left button pressed or not
+	bool rightPressed; // right button pressed or not
 
 	Mesh* mesh;
 	Mesh* ball; // for highlighting vertex

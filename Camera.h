@@ -25,6 +25,7 @@ public:
 	void setPWX(int val);
 	void setPWY(int val);
 	void setPRotationIdentity();
+	void setPTranslationIdentity();
 
 	void setscroll(int val);
 
@@ -33,6 +34,7 @@ public:
 	
 	void updateUnitCoord();
 	void updatePUnitCoord();
+	void move(double approxBBSize);
 	void arcballRotate();
 
 	void zoom();
@@ -65,6 +67,7 @@ private:
 	int winX, winY, preWinX, preWinY;
 	double unitX, unitY, preUnitX, preUnitY;
 	QMatrix4x4 pRotation;
+	QMatrix4x4 pTranslation;
 
 	// zoom
 	int scroll;
