@@ -43,3 +43,5 @@ ${Qt5_LOCAL_DIR}\5.xx.0\msvcxxxx_64\plugins\platforms
 Ray Triangle intersection code is from https://github.com/jeremynewlin/Accel.
 
 Import and export icons are from https://icons8.com.
+
+Black curor-clicked icon is from https://www.shareicon.net/, which is integrated in face, edge and vertex selection icon.
