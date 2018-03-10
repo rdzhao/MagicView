@@ -12,7 +12,7 @@ Dependencies: CGAL and Qt5. Install CGAL and Qt for Windows first.
 This example shows loading a large mesh.
 ![alt text](https://github.com/rdzhao/QtViewer/blob/master/illustration/example_2.png) <!-- .element height="50%" width="50%" -->
 
-This example shows face, edge and vertext selection. 
+This example shows face, edge and vertex selection. 
 ![alt text](https://github.com/rdzhao/QtViewer/blob/master/illustration/example_1.png) <!-- .element height="50%" width="50%" -->
 
 ## Make sure the following environment variables are set: <br />
