@@ -8,7 +8,7 @@ Now this code includes a basic implementation for OpenGL rendering, arcball and 
 
 Dependencies: CGAL and Qt5. Install CGAL and Qt for Windows first. 
 
-# GUI Example
+## GUI Example
 This example shows loading a large mesh.
 ![alt text](https://github.com/rdzhao/QtViewer/blob/master/illustration/example_2.png) <!-- .element height="50%" width="50%" -->
 
