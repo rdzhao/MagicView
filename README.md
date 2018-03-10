@@ -6,9 +6,11 @@ Basic implementation for viewing polyhedral mesh based on Qt GUI.
 
 Now this code includes a basic implementation for OpenGL rendering, arcball and primitive selection for user interaction.
 
-Dependencies: CGAL and Qt5.
+Dependencies: CGAL and Qt5. Install CGAL and Qt for Windows first. 
 
-Install CGAL and Qt for Windows. 
+# GUI Example
+![alt text](https://github.com/rdzhao/QtViewer/blob/master/illustration/example_1.png)
+![alt text](https://github.com/rdzhao/QtViewer/blob/master/illustration/example_2.png)
 
 ## Make sure the following environment variables are set: <br />
 BOOST_LIBRARYDIR = ${BOOST_LOCAL_DIR}\lib64-msvc-xx.0 <br />
