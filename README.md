@@ -10,10 +10,10 @@ Dependencies: CGAL and Qt5. Install CGAL and Qt for Windows first.
 
 # GUI Example
 This example shows loading a large mesh.
-![alt text](https://github.com/rdzhao/QtViewer/blob/master/illustration/example_2.png = 400*400)
+![alt text](https://github.com/rdzhao/QtViewer/blob/master/illustration/example_2.png =400x400)
 
 This example shows face, edge and vertext selection. 
-![alt text](https://github.com/rdzhao/QtViewer/blob/master/illustration/example_1.png = 400*400)
+![alt text](https://github.com/rdzhao/QtViewer/blob/master/illustration/example_1.png =400x400)
 
 ## Make sure the following environment variables are set: <br />
 BOOST_LIBRARYDIR = ${BOOST_LOCAL_DIR}\lib64-msvc-xx.0 <br />
