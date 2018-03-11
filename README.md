@@ -6,7 +6,7 @@ Basic implementation for viewing polyhedral mesh based on Qt GUI.
 
 Now this code includes a basic implementation for OpenGL rendering, arcball and primitive selection for user interaction.
 
-Dependencies: CGAL and Qt5. Install CGAL and Qt for Windows first. 
+Dependencies: [CGAL](https://www.cgal.org/) and [Qt5](https://www1.qt.io/developers/). Install CGAL and Qt for Windows first. 
 
 ## GUI Example
 This example shows loading a large mesh.
