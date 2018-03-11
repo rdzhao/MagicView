@@ -1,4 +1,4 @@
-# QtViewer
+# MagicView
 
 This project only supports Visual Studio 2015+ x64.
 
@@ -6,9 +6,9 @@ Basic implementation for viewing polyhedral mesh based on Qt GUI.
 
 Now this code includes a basic implementation for OpenGL rendering, arcball and primitive selection for user interaction.
 
-Dependencies: CGAL and Qt5. Install CGAL and Qt for Windows first. 
+Dependencies: [CGAL](https://www.cgal.org/) and [Qt5](https://www1.qt.io/developers/). Install CGAL and Qt for Windows first. 
 
-# GUI Example
+## GUI Example
 This example shows loading a large mesh.
 ![alt text](https://github.com/rdzhao/QtViewer/blob/master/illustration/example_2.png) <!-- .element height="50%" width="50%" -->
 
@@ -43,3 +43,5 @@ ${Qt5_LOCAL_DIR}\5.xx.0\msvcxxxx_64\plugins\platforms
 Ray Triangle intersection code is from https://github.com/jeremynewlin/Accel.
 
 Import and export icons are from https://icons8.com.
+
+Black cursor-clicked icon is from https://www.shareicon.net, which is integrated in face, edge and vertex selection icon.
