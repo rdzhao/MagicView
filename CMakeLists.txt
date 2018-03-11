@@ -14,8 +14,10 @@ include(${CGAL_USE_FILE})
 
 add_subdirectory(glm)
 
-file(GLOB Headers "*.h")
-file(GLOB Sources "*.cpp")
+include_directories(".")
+
+file(GLOB Headers "src/*.h")
+file(GLOB Sources "src/*.cpp")
 file(GLOB Resources "resources/*.png")
 
 add_executable(MagicView ${Headers} ${Sources} ${Resources})
