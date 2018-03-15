@@ -332,7 +332,6 @@ void OGLWidget::delVertexHL(RenderModule* rm, int pos)
 
 void OGLWidget::setCamera()
 {
-
 	camera.setView(QVector3D(0, 0, 5*mesh->radius()), QVector3D(0, 0, 0), QVector3D(0, 1, 0));
 
 	camera.setProject(45.0, 4.0 / 3.0, 0.01, 10000);

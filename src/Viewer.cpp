@@ -67,7 +67,7 @@ void Viewer::createCanvas()
 	canvas->setFormat(format);
 	canvas->show();
 
-	string fn = "ball.obj";
+	string fn = "../../resources/ball.obj";
 	ObjReader<Kernel, Enriched_items> reader(fn);
 	reader.read();
 
