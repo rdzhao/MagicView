@@ -1,6 +1,6 @@
 # MagicView
 
-This project only supports Visual Studio 2015+ x64.
+This project only supports Visual Studio 2015, 2017 x64.
 
 Basic implementation for viewing polyhedral mesh based on Qt GUI.
 
