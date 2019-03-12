@@ -23,7 +23,7 @@ CGAL_DIR = ${CGAL_LOCAL_DIR} <br />
 Qt5_DIR = ${Qt5_LOCAL_DIR}\5.xx.0\msvcxxxx_64
 
 ### Add the following environment variables to PATH: <br />
-${BOOST_LOCAL_DIR}lib64-msvc-14.0 <br />
+${BOOST_LOCAL_DIR}\lib64-msvc-14.0 <br />
 ${CGAL_LOCAL_DIR}\auxiliary\gmp\lib <br />
 ${CGAL_LOCAL_DIR}\build\bin <br />
 ${Qt5_LOCAL_DIR}\5.xx.0\msvcxxxx_64\bin <br />
